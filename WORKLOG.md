@@ -208,3 +208,10 @@ de6acdb Revert "Added exaggerated claim on purpose for Part 4"
 5e293d5 Ignored checkpoint file, trips_2025, stations.xlsx
 0711cc6 Added worklog memo
 
+Q8: This part neutralizes the version soup disaster, as the protection does not help if the commits are made on the wrong branch. Getting into the habit of running git status can help make sure that you are making edits on the correct file.
+```
+## Reflection + AI Disclosure
+```
+R1: The oops drill in part 4 made me much less scared of Git, as I realized that I could undo changes that felt permanent even if they were committed. While I knew that the goal of Git was to be able to go back to prior versions, I didn't actually understand how this worked after the changes were committed, so being able to work it out made it less frightening.
+R2: I used generative AI tools to explain how to open Git and to make sure that I had everything I needed downloaded, as I did not have VS code installed correctly. I also repeatedly could not type in the terminal, which I used ChatGPT to debug. I also received the error “fatal: invalid reference: main” when I was trying to switch to my main, which it helped me debug (as my main branch was named “master” instead). I also used AI to debug why my file was not being saved to GitHub, even though I was committing it.
+```
