@@ -49,3 +49,39 @@ Untracked files:
 
 nothing added to commit but untracked files present (use "git add" to track)
 PR description: Modified sentence about relative pressure to clarify what the pressure is relative to
+
+2e: 7370b70 (HEAD -> main, origin/main, origin/HEAD) Merge pull request #4 from rileysapp/chore/tidy-report
+e9e8894 (origin/chore/tidy-report, chore/tidy-report) Modified sentence about relative pressure to clarify what the pressure is relative to
+e09f4f8 Completed questions through 2c
+b7e1813 Added collab log
+b45303d Add worklog for collaboration purposes
+3a8b0d2 Add part 9 to worklog
+d03bcee Updated remaining files
+b8f02b9 Updated analysis.ipynb
+:
+
+Q2: When the PR was open but not yet merged, main was untouched.
+```
+### Part 3
+```
+Q3: I did not embed a chart. A relative path is important for someone who clones the repo because they do not have the same file locations as the creator of the repo
+```
+### Part 4
+4ci: <<<<<<< HEAD
+The 2026 ridership data implies that the implementation of the day pass and creation of new stations have improved ridership from and decreased bottlenecking of stations in 2025.
+=======
+The implementation of the day pass and creation of new stations seem to have improved ridership from and decreased bottlenecking of stations in 2025.
+>>>>>>> main
+4cii: The 2026 ridership data implies that the implementation of the day pass and creation of new stations have improved ridership from and decreased bottlenecking of stations in 2025.
+
+4d: e0b29f5 (HEAD -> main, origin/main, origin/HEAD) Merge pull request #5 from rileysapp/docs/project-readme
+b7e2f1d (origin/docs/project-readme, docs/project-readme) Removed conflicts
+5b68c7c Reworded key findings sentence in report.md
+ff7f7ea Changed verbiage in report.md headline and added README
+7370b70 Merge pull request #4 from rileysapp/chore/tidy-report
+e9e8894 (origin/chore/tidy-report, chore/tidy-report) Modified sentence about relative pressure to clarify what the pressure is relative to
+e09f4f8 Completed questions through 2c
+:
+
+Q4: The PR allows multiple collaborators to review each others' work rather than one person making the decision; because of this, the PR required more context when making changes.
+```
