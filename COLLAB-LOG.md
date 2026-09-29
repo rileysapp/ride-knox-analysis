@@ -64,7 +64,7 @@ Q2: When the PR was open but not yet merged, main was untouched.
 ```
 ## Part 3
 ```
-Q3: I did not embed a chart. A relative path is important for someone who clones the repo because they do not have the same file locations as the creator of the repo
+Q3: I embedded the chart for distribution of casual bike trip durations because it was in the repository. A relative path is important for someone who clones the repo because they do not have the same file locations as the creator of the repo
 ```
 ## Part 4
 ```
@@ -105,3 +105,6 @@ Q6: "Request changes" on a pull request is kinder than delivering that feedback 
 ```
 ## Part 7
 ```
+7a: https://github.com/rileysapp/
+
+Q7: A hiring manager would click into my repo because it includes my qualifications and the tools in which I am proficient in, as well as showcasing samples of my strongest work in my pinned repo.
