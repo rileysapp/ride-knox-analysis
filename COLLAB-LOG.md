@@ -62,11 +62,12 @@ b8f02b9 Updated analysis.ipynb
 
 Q2: When the PR was open but not yet merged, main was untouched.
 ```
-### Part 3
+## Part 3
 ```
 Q3: I did not embed a chart. A relative path is important for someone who clones the repo because they do not have the same file locations as the creator of the repo
 ```
-### Part 4
+## Part 4
+```
 4ci: <<<<<<< HEAD
 The 2026 ridership data implies that the implementation of the day pass and creation of new stations have improved ridership from and decreased bottlenecking of stations in 2025.
 =======
@@ -84,4 +85,23 @@ e09f4f8 Completed questions through 2c
 :
 
 Q4: The PR allows multiple collaborators to review each others' work rather than one person making the decision; because of this, the PR required more context when making changes.
+```
+## Part 5
+```
+5a: theme: jekyll-theme-cayman
+title: Ride Knox Ridership Analysis
+description: Impact of creating new stations and implementing day pass
+
+5b: https://rileysapp.github.io/ride-knox-analysis/
+
+Q5: The theme used in this assignment was the Jekyll Theme Cayman, as opposed to the in-class Jekyll Theme Minimal.
+```
+## Part 6
+```
+Discussed after class: no partner was reachable for this project.
+6b-alt: https://github.com/DATA501/ride-knox-analysis/pull/2
+
+Q6: "Request changes" on a pull request is kinder than delivering that feedback in a meeting because the reviewer is commenting on the code, not the coder; it is less personal and instead it is expected and professional.
+```
+## Part 7
 ```

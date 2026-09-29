@@ -29,6 +29,7 @@ Open analysis.ipynb
 Restart & Run All
 ## Key findings
 The implementation of the day pass and creation of new stations have improved ridership from and decreased bottlenecking of stations in 2025.
+![Member vs. casual trips](ride-knox-analysis/charts/distribution_of_day_pass_bike_trip_durations.png)
 ## Limitations
 This evidence is observational: there was also a steep drop-off in July 2025 that has not proven to not be seasonality because the 2026 data is only through June. Additionally, there are only four months of data for the day pass: we cannot be certain that the newness of it is not inflating ridership.
 ## Repo structure
