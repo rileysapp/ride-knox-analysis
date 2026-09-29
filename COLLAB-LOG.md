@@ -36,4 +36,16 @@ Issue #3 Clean Start Station Names - Values in start_station_name in trips_2025.
 
 Q1: Expected: 24 unique start_station_names. Actual: 120 unique start_station_names.
 ```
-## Part
+## Part 2
+```
+2a: * chore/tidy-report
+  main
+  reword-limitations
+
+2c: Commit message: On branch chore/tidy-report
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        ride-knox-recovery/
+
+nothing added to commit but untracked files present (use "git add" to track)
+PR description: Modified sentence about relative pressure to clarify what the pressure is relative to
