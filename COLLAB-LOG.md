@@ -108,3 +108,10 @@ Q6: "Request changes" on a pull request is kinder than delivering that feedback 
 7a: https://github.com/rileysapp/
 
 Q7: A hiring manager would click into my repo because it includes my qualifications and the tools in which I am proficient in, as well as showcasing samples of my strongest work in my pinned repo.
+```
+## Reflection + AI Disclosure
+```
+R1: I was less comfortable resolving the code inside a pull request because it felt like more of my responsibility. When leaving a review on another person's code, it was just confirming that another person had dpne things well; conversely, resolving the conflict myself felt like I had the final say, which was more daunting.
+
+R2: I used AI to troubleshoot repeatedly, as I got many errors. I had not correctly located the repository initially, so I used AI to determine what the error code I received meant. I also used it to troubleshoot why I was getting errors with having two Git repositories inside of each other. In part 3, I used it to explain what a schema table and repo structure are. All final answers are my own.
+```
