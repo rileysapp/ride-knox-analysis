@@ -111,7 +111,7 @@ Q-C3: The word "HEAD" marks Riley's commits, as he was the first one to make the
 ```
 ## Part D
 ```
-
+A visitor to the Pages URL would have seen the README.
 ```
 ## Reflection + AI disclosure
 ```
