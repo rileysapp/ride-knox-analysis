@@ -1,0 +1,4 @@
+## REQUIREMENTS
+```
+pandas, matplotlib, jupyter notebook
+```
