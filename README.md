@@ -1,11 +1,11 @@
-### README: Log of ridership and information on stations for Ride Knox in 2025 & log of ridership and information on stations for Ride Knox in 2026
-
+### README: Logs of ridership and information on stations for Ride Knox in 2025 & logs of ridership and information on stations for Ride Knox in 2026
+```
 ![Distrubition of Day Pass Bike Trip Durations](ride-knox-analysis\distribution_of_day_pass_bike_trip_durations.png)
 
 ![Distribution of Casual Bike Trip Durations](ride-knox-analysis/charts/distribution_of_casual_bike_trip_durations.png)
 
 ![Distribution of Member Bike Trip Durations](ride-knox-analysis\distribution_of_member_bike_trip_durations.png)
-
+```
 ## Data
 `trips_2025.csv` — one row per trip:
 | column | type | notes |
