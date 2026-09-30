@@ -71,3 +71,37 @@ da40b1d Added data analysis from week 4 and associated charts
 ## Part A
 ```
 QA1: The issue describing backing up the 2026 analysis to GitHub must be done before anything that references the 2026 analysis, such as embedding the chart. This is because the new issues reference that initial issue, and they cannot be worked on until that issue is resolved.
+```
+## Part B
+```
+On branch part_b
+Your branch is up to date with 'origin/part_b'.
+
+B: Git status paste
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   _config.yml
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        .ipynb_checkpoints/
+        git_project_starter_pack.zip
+        ride-knox-recovery/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+Q-B1: The checkpoints must never be committed to the public repo, because they contain sensitive information. I ensured that this will not reach a public repo by adding it to gitignore.
+
+Q-B2: The reorganization caused a conflict in .gitignore, as it was merged and out-of-date, so I had to pull from GitHub, save it locally, fix the conflict, and push.
+```
+## Part C
+```
+```
+## Reflection + AI disclosure
+```
+
+AI disclosure:
+```I used a generative AI tool to explain what types of items to include in a requirements.txt file for part B. I also used it to troubleshoot my merge errors in part B.
