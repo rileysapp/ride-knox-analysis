@@ -1,6 +1,6 @@
 **Name: Riley Sapp**
 **Net ID: rsapp4**
-**Updates to PROJECT-LOG.md will be committed directly to main.**
+**Updates to PROJECT-LOG.md will be committed directly to main. This is because project log is the assignment itself and not an aspect of the project; as such, it would not be edited by multiple people and can be treated as part of the simulation of using GitHub.**
 
 ## Part 0
 ```
