@@ -111,10 +111,12 @@ Q-C3: The word "HEAD" marks Riley's commits, as he was the first one to make the
 ```
 ## Part D
 ```
-
+A visitor to the Pages URL would have seen the README.
 ```
 ## Reflection + AI disclosure
 ```
-
+Reflection:
+Riley's rejected push and conflict happened because he was pushing on the same branch without completing PR's. He should make small commits and short-lived branches to ensure that these conflicts do not occur as often. Professionals should push and pull often to ensure they are working with up-to-date code.
 AI disclosure:
-```I used a generative AI tool to explain what types of items to include in a requirements.txt file for part B. I also used it to troubleshoot my merge errors in part B.
+I used a generative AI tool to explain what types of items to include in a requirements.txt file for part B. I also used it to troubleshoot my merge errors in part B.
+```

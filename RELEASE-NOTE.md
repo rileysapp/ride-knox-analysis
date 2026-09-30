@@ -1,0 +1,3 @@
+## RELEASE NOTE
+Director of Operations,
+This updated website now shows the new findings of the 2026 changes, including the increased ridership shown that can likely be attributed to the implementation of the day pass. However, this evidence is observational: there was also a steep drop-off in July 2025 that has not proven to not be seasonality because the 2026 data is only through June. Additionally, there are only four months of data for the day pass in 2026: we cannot be certain that the newness of it is not inflating ridership. Review the charts to see the ridership of riders in 2026 who used the day pass, who owned a membership, and who did neither.
