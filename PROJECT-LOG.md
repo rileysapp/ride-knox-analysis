@@ -99,6 +99,19 @@ Q-B2: The reorganization caused a conflict in .gitignore, as it was merged and o
 ```
 ## Part C
 ```
+Rejection message: error: src refspec update-readme does not match any
+error: failed to push some refs to 'https://github.com/rileysapp/ride-knox-analysis.git'
+PS C:\Users\shana\Downlo
+
+Q-C1: The difference between assignment 5 and this project is that my collaborator and I both made edits to the same line. Git does not make a decision whenever two humans disagree.
+
+Q-C2: The problem is that both people were editing on the same branch. This conflict is aided by collaborators editing on their own branches and creating PR's instead of pushing directly.
+
+Q-C3: The word "HEAD" marks Riley's commits, as he was the first one to make the edits. It marks the start of the conflict.
+```
+## Part D
+```
+
 ```
 ## Reflection + AI disclosure
 ```
