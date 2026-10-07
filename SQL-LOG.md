@@ -71,6 +71,32 @@ Q2e: The ops should not ask for SELECT * FROM trips; and should instead ask for 
 ## Part 3
 ```
 3a:
+Downtown
+Old City
+World's Fair Park
+UT Campus
+UT Ag Campus
+Fort Sanders
+South Knoxville
+North Knoxville
+East Knoxville
+West Knoxville
+Bearden
+Sequoyah Hills
+
+3b:
+Result: 25 rows returned in 67ms
+S03
+S02
+S01
+
+Q3c: The station ID that does not appear is S99. This is beacause it does not have a primary key due to being a test station and not existing.
+
+Q3d: In class, it returned six values instead of two because databases are not automatically cleaned.
+```
+
+## Part 4
+```
 
 
 ## Reflection + AI Disclosure
