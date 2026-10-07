@@ -97,6 +97,52 @@ Q3d: In class, it returned six values instead of two because databases are not a
 
 ## Part 4
 ```
+4a:
+Cumberland Ave & 17th St
+Fort Sanders - Laurel Ave
+
+4b:
+Market Square	S01	20
+World's Fair Park	S05	20
+Hodges Library	S06	24
+Student Union - UT	S08	24
+
+4c: 
+Hodges Library
+Student Union - UT
+
+4d:
+[No result]
+
+4e:
+South Waterfront
+Suttree Landing Park
+Ijams Nature Center
+Zoo Knoxville
+Caswell Park
+
+4f:
+S02	Gay Street & Union Ave	16
+S03	Krutch Park	12
+S04	Old City - Jackson Ave	16
+S07	The Hill - Ayres Hall	12
+S09	Neyland Stadium	16
+S10	Ag Campus - Morgan Hall	12
+S11	Cumberland Ave & 17th St	16
+S12	Fort Sanders - Laurel Ave	12
+S14	South Waterfront	12
+S17	Happy Holler	12
+S19	Broadway & Central	12
+S22	Tyson Park	12
+S23	Bearden - Kingston Pike	12
+
+Q4g: Using parentheses returns 2 columns, while not using parentheses does not return any columns. 4c answers the ops leader's questions and indicates that appropriate use of parentheses is important to returning relevant results.
+
+Q4h: I would rather hand a colleague the version using BETWEEN, as it is easier to read; this way, a colleague better understand what he is looking at and can make informed decisions.
+```
+
+## Part 5
+```
 
 
 ## Reflection + AI Disclosure
