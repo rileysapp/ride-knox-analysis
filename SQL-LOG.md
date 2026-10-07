@@ -23,5 +23,57 @@ The primary key is station_id.
 
 Q0:
 PRAGMA table_info(stations) tells you the data type of each column, which Excel would not tell you.
+```
 
 ## Part 1
+```
+1a: Primary key:
+trips.trip_id --> T0057984
+stations.station_id --> S06
+trips.start_station_id --> stations.station_id
+trips.end_station_id --> stations.station_id
+
+1b: The database does not contain start_station_names because it uses the relational model, where it stores a fact once and refers to it everywhere else. In module 2, there were 121 distinct spellings of start_station_name for only 24 real stations because it distinctly copied the station's name onto all 250,600 rows.
+
+1c: Because the database is relational, only two rows need to change (the latitude and longitude rows); all other instances will refer to those rows. This is different from a flat CSV, where all 250,600 rows would need to be changed.
+
+Q1d: The 600 rows were rejected because the database was referring to primary keys that uniquely identify each row; the remaining 600 rows were duplicates, so they were not counted. This is better than the drop_duplicates() in module 3 because it relies on one primary key rather than needing all aspects of a row to be the same.
+```
+
+## Part 2
+```
+2a:
+S01	Downtown	35.9649	-83.9197
+S02	Downtown	35.9662	-83.9184
+S03	Downtown	35.9636	-83.9186
+S04	Old City	35.9721	-83.9151
+S05	World's Fair Park	35.9622	-83.9265
+
+2b:
+S01	Market Square	4.0
+S02	Gay Street & Union Ave	4.0
+S03	Krutch Park	4.0
+S04	Old City - Jackson Ave	4.0
+S05	World's Fair Park	4.0
+
+2c:
+T0057984	2025-01-01 00:06:48	0.21
+T0073896	2025-01-01 00:40:20	0.67
+T0206129	2025-01-01 00:42:40	0.46
+T0163585	2025-01-01 00:42:54	0.25
+T0094124	2025-01-01 01:19:33	0.51
+
+Q2d: No, age_years does not exist in stations after 2b. A result set is a new table, computed on the spot, while the original table stays the same.
+
+Q2e: The ops should not ask for SELECT * FROM trips; and should instead ask for more specific columns because they allow the database to be cleaned and run more quickly.
+```
+
+## Part 3
+```
+3a:
+
+
+## Reflection + AI Disclosure
+```
+R1: 
+R2: I used a generative AI tool to explain the differences between using DB Browser and VS Code. I also used it to troubleshoot why I was getting an error in 2c (I had misplaced a parenthesis).
