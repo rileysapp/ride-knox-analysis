@@ -13,6 +13,13 @@ Q0c: "With_end_station" and "rider_type_spellings" are diagnostics. These two ro
 ```
 ## Part 1
 ```
+1a: 24	13.8	10	24
+
+1b: 250600	0.47	-1.75	71.81
+
+1c: 248825	0.28	0.02	3.0
+
+
 ```
 ## Part 2
 ```
@@ -29,4 +36,6 @@ Q0c: "With_end_station" and "rider_type_spellings" are diagnostics. These two ro
 ## Part 6
 ```
 ```
-##
+## AI Disclosure
+```
+I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses).
