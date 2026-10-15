@@ -99,6 +99,43 @@ Q3d: The grouping rules is that every expression within SELECT must appear in ei
 ```
 ## Part 4
 ```
+4a: S06	26112
+S08	25044
+S01	22656
+S11	18983
+S02	16570
+S05	15435
+
+4b: S08	817
+S06	809
+S01	695
+S11	578
+S02	552
+S05	454
+S07	419
+S09	405
+S04	390
+S03	323
+
+4c: 04	25651
+05	29899
+06	31611
+07	27211
+
+4d: Execution finished with errors.
+Result: misuse of aggregate: COUNT()
+At line 20:
+SELECT
+	strftime('%m', start_time) AS month,
+	COUNT(*) AS trips
+FROM trips
+WHERE COUNT(*) > 25000
+GROUP BY month
+ORDER BY month;
+
+Q4e: WHERE filters before GROUP BY in the logical order.
+
+Q4f: WHERE filters stations while HAVING filters trips. WHERE discards rows before the expensive grouping; moving the bike_type condition to HAVING would be a bad idea because it occurs after GROUP BY.
 ```
 ## Part 5
 ```
@@ -108,4 +145,4 @@ Q3d: The grouping rules is that every expression within SELECT must appear in ei
 ```
 ## AI Disclosure
 ```
-I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type.
+I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type. I used it in 4b to show where to include WHERE in the syntax.
