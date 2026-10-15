@@ -62,6 +62,11 @@ Returned 25 rows for only 24 stations.
 22	3495
 23	1848
 
+2c: classic	member	98628	23.9
+electric	member	60299	25.9
+classic	casual	56672	34.6
+electric	casual	35001	34.8
+
 ```
 ## Part 3
 ```
@@ -77,4 +82,4 @@ Returned 25 rows for only 24 stations.
 ```
 ## AI Disclosure
 ```
-I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement).
+I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type.
