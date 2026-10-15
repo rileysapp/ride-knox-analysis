@@ -169,7 +169,63 @@ Q5f: Station_name would not be stored anywhere in the trips table; the join just
 ```
 ## Part 6
 ```
+6a: 	3774
+
+6b: I don't know what this is asking.
+
+6c: 
+Version 1:
+S01	Market Square	5
+S02	Gay Street & Union Ave	7
+S03	Krutch Park	4
+S04	Old City - Jackson Ave	6
+S05	World's Fair Park	3
+S06	Hodges Library	13
+S07	The Hill - Ayres Hall	3
+S08	Student Union - UT	8
+S09	Neyland Stadium	6
+S10	Ag Campus - Morgan Hall	1
+S11	Cumberland Ave & 17th St	3
+S12	Fort Sanders - Laurel Ave	1
+S13	Second Creek Greenway	1
+S14	South Waterfront	1
+S16	Ijams Nature Center	2
+S17	Happy Holler	1
+S18	Fourth & Gill	1
+S19	Broadway & Central	1
+S20	Zoo Knoxville	2
+S21	Caswell Park	2
+S22	Tyson Park	2
+S23	Bearden - Kingston Pike	1
+Returns 22 rows.
+
+Version 2:
+S01	Market Square	5
+S02	Gay Street & Union Ave	7
+S03	Krutch Park	4
+S04	Old City - Jackson Ave	6
+S05	World's Fair Park	3
+S06	Hodges Library	13
+S07	The Hill - Ayres Hall	3
+S08	Student Union - UT	8
+S09	Neyland Stadium	6
+S10	Ag Campus - Morgan Hall	1
+S11	Cumberland Ave & 17th St	3
+S12	Fort Sanders - Laurel Ave	1
+S13	Second Creek Greenway	1
+S14	South Waterfront	1
+S15	Suttree Landing Park	0
+S16	Ijams Nature Center	2
+S17	Happy Holler	1
+S18	Fourth & Gill	1
+S19	Broadway & Central	1
+S20	Zoo Knoxville	2
+S21	Caswell Park	2
+S22	Tyson Park	2
+S23	Bearden - Kingston Pike	1
+S24	Sequoyah Hills Park	0
+Returns 22 rows.
 ```
 ## AI Disclosure
 ```
-I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type. I used it in 4b to show where to include WHERE in the syntax. I used it for part 5c for how to combine the functions.
+I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type. I used it in 4b to show where to include WHERE in the syntax. I used it for part 5c for how to combine the functions. I also used it for 6c to return how to do the syntax for version 1.
