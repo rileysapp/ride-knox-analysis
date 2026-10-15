@@ -139,10 +139,37 @@ Q4f: WHERE filters stations while HAVING filters trips. WHERE discards rows befo
 ```
 ## Part 5
 ```
+5a: T0140894	2025-12-31 23:42:04	Fort Sanders - Laurel Ave	12
+T0233859	2025-12-31 23:40:52	Old City - Jackson Ave	16
+T0003228	2025-12-31 21:17:24	Old City - Jackson Ave	16
+T0139742	2025-12-31 19:17:46	Old City - Jackson Ave	16
+T0168422	2025-12-31 17:54:35	Old City - Jackson Ave	16
+Count of 16342 rows.
+
+5b: 246826
+
+5c: UT Campus	78365	28.8
+Downtown	49859	27.6
+Fort Sanders	28475	28.9
+World's Fair Park	21504	25.1
+North Knoxville	17105	28.8
+South Knoxville	16364	26.9
+Old City	14302	30.2
+UT Ag Campus	7268	30.1
+West Knoxville	6662	32.8
+East Knoxville	6391	26.6
+Bearden	2103	32.6
+Sequoyah Hills	1939	35.4
+
+Q5d: 5b lost 3174 rows compared to the 250,000 in trips. 263 rows disappeared because they were the test station, while the other rows disappeared because they did not have an end_station_id.
+
+Q5e: t. and s. are shorthand for the tables, being trips and stations. A column like trip_id would be ambiguous because it exists in both tables, so the database would return an error.
+
+Q5f: Station_name would not be stored anywhere in the trips table; the join just returned it in SQL's execute tab. This means that the data is not overwritten.
 ```
 ## Part 6
 ```
 ```
 ## AI Disclosure
 ```
-I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type. I used it in 4b to show where to include WHERE in the syntax.
+I used AI in part 1a to troubleshoot why stations was not loading; I needed to convert the XLSX to a CSV to import it as a table. I also used it in part 1c to troubleshoot my syntax (I had added too many parentheses). I also used it in part 1d to troubleshoot how to correctly use "CASE WHEN" (I had been trying to use a regular WHEN statement). I used it in part 2c to help adjust the code from class to change the month to bike type. I used it in 4b to show where to include WHERE in the syntax. I used it for part 5c for how to combine the functions.
