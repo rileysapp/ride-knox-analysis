@@ -67,6 +67,23 @@ electric	member	60299	25.9
 classic	casual	56672	34.6
 electric	casual	35001	34.8
 
+2d: classic	member	95166	24.0
+electric	member	58222	25.9
+classic	casual	54625	34.8
+electric	casual	33770	34.4
+classic	Member	1976	20.0
+classic	MEMBER	1486	24.6
+electric	Member	1194	27.6
+classic	Casual	1193	33.0
+electric	MEMBER	883	22.3
+classic	CASUAL	854	27.6
+electric	Casual	713	52.7
+electric	CASUAL	518	36.8
+The row count is 12.
+
+Q2e: 2d returned 12 rows, with 8 describing rider types that don't really exist. GROUP BY groups values that are identical.
+
+Q2f: SQL returns the long result, whereas you can use unstack() in pandas to get the wide version, which would have the months down and the rider types across.
 ```
 ## Part 3
 ```
