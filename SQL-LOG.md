@@ -87,6 +87,13 @@ Q2f: SQL returns the long result, whereas you can use unstack() in pandas to get
 ```
 ## Part 3
 ```
+3a: casual	56672	35001
+member	98628	60299
+
+3b: classic	casual	155300
+electric	casual	95300
+
+Q3c: 3b provided a clean-looking answer. The rider_type column provides a value that appears to be an aggregate, but really SQLite picked a random value arbitrarily, which happened to be casual.
 ```
 ## Part 4
 ```
