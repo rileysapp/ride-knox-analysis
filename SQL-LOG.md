@@ -94,6 +94,8 @@ member	98628	60299
 electric	casual	95300
 
 Q3c: 3b provided a clean-looking answer. The rider_type column provides a value that appears to be an aggregate, but really SQLite picked a random value arbitrarily, which happened to be casual.
+
+Q3d: The grouping rules is that every expression within SELECT must appear in either GROUP BY or inside an aggregate function. If 3b was run in PostgreSQL, it would have been refused and not run at all. I would prefer this, as it would not silently run an inaccurate statement.
 ```
 ## Part 4
 ```
