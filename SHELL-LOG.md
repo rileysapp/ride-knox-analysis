@@ -280,8 +280,58 @@ Q7d.
   16570 S02
 
   If the two rankings did not match, it would mean that part 7's pipeline had missed some piece of normalization and that some station names were not being credited to their correct station ID.
-
 ```
+## Part 8
+```
+8a.
+$ grep -c "S11" trips_2025.csv
+35415
+
+$ awk -F',' '$4 == "S11"' trips_2025.csv | wc -l
+18983
+
+Q8b.
+The two numbers differ by a large margin because grep returns any row in which S11 exists anywhere, while awk only returns rows in which only column 4 is S11. The additional grep matches are also the end stations.
+
+8c.
+$ awk -F, 'NR>1 && $6=="" && tolower($7)=="member" {n++} END {print n+0}' trips_2025.csv
+2371
+
+Q8d.
+The share of trips with no end_station_id that were taken by members was 2371/3774 trips with no end_station_id, or 62.82% of trips with no end_station_id. This shows that a majority of trips with no end_station_id are taken by members; this may suggest that the error causing a trip to have no end_station_id may be correlated with membership. However, it cannot determine causation.
+
+8e.
+$ awk -F, 'NR>1 && tolower($8)=="electric" {c[substr($2,6,2)]++} END {for (k in c) print k, c[k]}' trips_2025.csv | sort
+01 4186
+02 5090
+03 7526
+04 9749
+05 11331
+06 12067
+07 10447
+08 9348
+09 8837
+10 7571
+11 5287
+12 3861
+
+8f.
+With -r
+04 9749
+08 9348
+09 8837
+10 7571
+
+With -rn
+06 12067
+05 11331
+07 10447
+04 9749
+
+Q8g.
+The month that the alphabetic sort delivers is April, with 9,749; however, the numeric sort delivers June, with 12,067 trips. This is because the alphabetic version reads the first digit and determines if it is higher than the other first digits, so April's 9 is read as higher than June's 1. The numeric sort is correct. A colleague reading only the wrong version would have concluded that Ride Knox's electric fleet is much less successful, as they would assume that the most productive month only had less than 10,000 trips.
+```
+
 ## Part 10
 ## Reflection
 R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat.
