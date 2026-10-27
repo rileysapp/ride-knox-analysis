@@ -354,6 +354,40 @@ The counts in 9a sum to 56,744, while wc -l in 5b returned 56,747. This is likel
 9d.
 ```
 ## Part 10
+```
+C1.
+$ awk -F, 'NR>1 {if ($4 != "S99") d[$4]++; if ($6 != "") a[$6]++} END {for (k in d) print k, d[k], a[k], d[k]-a[k]}' trips_2025.csv | sort
+S01 22656 22377 279
+S02 16570 16334 236
+S03 10633 10624 9
+S04 14302 14059 243
+S05 15435 15173 262
+S06 26112 25584 528
+S07 14177 14192 -15
+S08 25044 24501 543
+S09 13032 13035 -3
+S10 7268 7135 133
+S11 18983 18986 -3
+S12 9492 9268 224
+S13 6069 5841 228
+S14 8324 8063 261
+S15 3782 3633 149
+S16 4258 4102 156
+S17 7134 6926 208
+S18 4691 4715 -24
+S19 5280 5203 77
+S20 3548 3560 -12
+S21 2843 2921 -78
+S22 6662 6537 125
+S23 2103 2113 -10
+S24 1939 1944 -5
+
+Largest net outflow: S06, S08, S01
+Largest net inflow: S21, S18, S07
+
+C2.
+For the net outflow for Hodges Library, SQL returns 581, while Bash returns 528. Module 8's clean_trips removes duplicate trips, S99, and bad durations, while the pipeline only removes trips that start at S99, duplicate trips, and trips that have a blank end_station--these are not all of the "bad durations", as SQL would also remove trips that have a duration that ended before starting, while Bash would not. Additionally, the pipeline in part 6 removed exact duplicates from the file, but SQL removed duplicate trip_ids. It is possible that some of the trips in the SQL version had identical trip_ids but were not entirely identical other than that, so they would have been counted in clean_trips but not in C1.
+```
 ## Reflection
 R1.
 I would most likely be least likely to catch the field-blind grep in 8a, because it requires me to consider all instances in which a value might occur. In the future, I could make a habit to ensure I run head -1 __.csv to ensure that the rows do not have the possibility of overlapping. I could also be sure to use awk when applicable to ensure that I am being specific and am certain which rows are being audited.
@@ -362,4 +396,4 @@ R2.
 awk arrays are very messy and specific, while GROUP BY seems more intuitive to me. However, an awk array is necessary when working with large data sets, because pandas requires a load, a clean, a groupby, and an unstack, while awk only needs one line. Regardless, 8e and 9a were massive strings that are easy to mess up, and because it would have silently returned the wrong answer, it would likely be faster and safer to use pandas or SQL.
 
 R3.
-AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat. I used it for 9a to explain how to make an awk command read multiple files rather than just one; I Was trying to use the awk arrays and NR instead of FNR with && operators, which I used AI to clean up and explain what syntax should be used instead. All final commands, results, and conclusions are my own.
+AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat. I used it for 9a to explain how to make an awk command read multiple files rather than just one; I was trying to use the awk arrays and NR instead of FNR with && operators, which I used AI to clean up and explain what syntax should be used instead. I also used it to troubleshoot my syntax is C1, as I was not correctly placing my brackets and did not know how to use if statements in Bash. All final commands, results, and conclusions are my own.
