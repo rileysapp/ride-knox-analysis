@@ -331,7 +331,28 @@ With -rn
 Q8g.
 The month that the alphabetic sort delivers is April, with 9,749; however, the numeric sort delivers June, with 12,067 trips. This is because the alphabetic version reads the first digit and determines if it is higher than the other first digits, so April's 9 is read as higher than June's 1. The numeric sort is correct. A colleague reading only the wrong version would have concluded that Ride Knox's electric fleet is much less successful, as they would assume that the most productive month only had less than 10,000 trips.
 ```
+## Part 9
+```
+9a. 
+$ awk -F, 'FNR>1 {c[substr($2,1,7)," " $8]++} END {for (k in c) print k, c[k]}' out/trips_2025_*.csv | sort
+2025-08 classic 5
+2025-08 electric 4
+2025-09 classic 14360
+2025-09 electric 8842
+2025-10 classic 12215
+2025-10 electric 7575
+2025-11 classic 8456
+2025-11 electric 5287
 
+
+Q9b.
+Instead of getting 6 groups, I got 8 groups, with two groups for August also included. This likely occurred because the files were created using grep, which locates a string anywhere within a row rather than in a specific column. Therefore, it is possible that the 9 trips that were recorded in August had a start date in August, but an end date in September (i.e., they may have started late in the night and finished the morning after). This would still cause these trips to appear in the dataset, as they have 2025-09 somewhere in the line.
+
+Q9c.
+The counts in 9a sum to 56,744, while wc -l in 5b returned 56,747. This is likely because the 3 additional rows were the headers for all 3 files, which 5b did not account for. One might also come into problems with the fact that the files were created with grep, so it counts if any of the dates existed anywhere within the line; therefore, some trips that started in August appear in the pipeline, despite the pipeline intending on only showing the trips that started in September-November. In this module, you could use an operator > or < and and && in 9a to only show trips whose start date is betweeen 09 and 11.
+
+9d.
+```
 ## Part 10
 ## Reflection
-R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat.
+R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat. I used it for 9a to explain how to make an awk command read multiple files rather than just one; I Was trying to use the awk arrays and NR instead of FNR with && operators, which I used AI to clean up and explain what syntax should be used instead.
