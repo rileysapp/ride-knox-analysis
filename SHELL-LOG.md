@@ -355,4 +355,11 @@ The counts in 9a sum to 56,744, while wc -l in 5b returned 56,747. This is likel
 ```
 ## Part 10
 ## Reflection
-R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat. I used it for 9a to explain how to make an awk command read multiple files rather than just one; I Was trying to use the awk arrays and NR instead of FNR with && operators, which I used AI to clean up and explain what syntax should be used instead.
+R1.
+I would most likely be least likely to catch the field-blind grep in 8a, because it requires me to consider all instances in which a value might occur. In the future, I could make a habit to ensure I run head -1 __.csv to ensure that the rows do not have the possibility of overlapping. I could also be sure to use awk when applicable to ensure that I am being specific and am certain which rows are being audited.
+
+R2.
+awk arrays are very messy and specific, while GROUP BY seems more intuitive to me. However, an awk array is necessary when working with large data sets, because pandas requires a load, a clean, a groupby, and an unstack, while awk only needs one line. Regardless, 8e and 9a were massive strings that are easy to mess up, and because it would have silently returned the wrong answer, it would likely be faster and safer to use pandas or SQL.
+
+R3.
+AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat. I used it for 9a to explain how to make an awk command read multiple files rather than just one; I Was trying to use the awk arrays and NR instead of FNR with && operators, which I used AI to clean up and explain what syntax should be used instead. All final commands, results, and conclusions are my own.
