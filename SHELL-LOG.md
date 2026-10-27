@@ -240,6 +240,13 @@ $ grep '^T0000118,' trips_2025.csv
 T0000118,2025-04-23 15:56:40,2025-04-23 16:15:49,S16,Ijams Nature Center,S14,member,electric
 T0000118,2025-04-23 15:56:40,2025-04-23 16:15:49,S16,Ijams Nature Center,S14,member,electric
 The two trips are identical.
+
+Q6f.
+This file is carrying exact duplicates; therefore, running tail -n +2 trips_2025.csv | sort -u | wc -l would remove the duplicates. This returns 250,000, which matches the anchor.
+```
+## Part 7
+```
+
 ```
 ## Part 10
 ## Reflection
