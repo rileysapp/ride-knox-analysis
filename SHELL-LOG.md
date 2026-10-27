@@ -179,7 +179,68 @@ $ wc -l out/trips_2025_*.csv
   13750 out/trips_2025_11.csv
   56747 total
 
+5c.
+$ wc -l out/trips_2025_09.csv > out/summary.txt
+
+$ wc -l out/trips_2025_10.csv >> out/summary.txt
+
+$ wc -l out/trips_2025_11.csv >> out/summary.txt
+
+$ cat out/summary.txt
+23202 out/trips_2025_09.csv
+19795 out/trips_2025_10.csv
+13750 out/trips_2025_11.csv
+
+5d.
+$ grep "fake" fake.csv 2> out/errors.log
+
+$ cat out/errors.log
+grep: fake.csv: No such file or directory
+
+Q5e. out/summary.txt would have only contained the data for the November logs (or whichever logs were inputted last), because > overwrites a file without asking rather than appending it. That is worth rereading a redirection twice, because if you had forgotten that character, then the other two files would have been overwritten.
+
+Q5f.
+Errors go to a separate stream so a broken command's complaint doesn't end up inside your results file. Keeping stderr separate, the shell helps avoid quietly corrupting a results file.
+```
+## Part 6
+```
+6a.
+$ cut -d, -f8 trips_2025.csv | tail -n +2 | sort | uniq -c | sort -rn
+ 155300 classic
+  95300 electric
+The two counts sum to 250,600.
+
+6b.
+$ cut -d, -f4 trips_2025.csv | tail -n +2 | sort | uniq -c | sort -rn | head -n 5
+  26112 S06
+  25044 S08
+  22656 S01
+  18983 S11
+  16570 S02
+
+$ cut -d, -f4 trips_2025.csv | tail -n +2 | sort | uniq -c | sort -r | head -n 5
+  26112 S06
+  25044 S08
+  22656 S01
+  18983 S11
+  16570 S02
+
+Q6c.
+Despite the fact that sort -r compares text and -rn compares numbers, the counts are the same because the integers happen to also be in numeric order. However, if two integers had a different number of digits between them, (e.g., 100,000 versus 9,000), then the nummber with the higher starting digit would be ranked higher in -r.
+
+6d.
+$ cut -d, -f1 trips_2025.csv | tail -n +2 | sort | uniq -d | wc -l
+600
+
+6e.
+$ cut -d, -f1 trips_2025.csv | tail -n +2 | sort | uniq -d | head -n 1
+T0000118
+
+$ grep '^T0000118,' trips_2025.csv
+T0000118,2025-04-23 15:56:40,2025-04-23 16:15:49,S16,Ijams Nature Center,S14,member,electric
+T0000118,2025-04-23 15:56:40,2025-04-23 16:15:49,S16,Ijams Nature Center,S14,member,electric
+The two trips are identical.
 ```
 ## Part 10
 ## Reflection
-R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep.
+R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep. I used it in 5c to explain how to display the finished file using cat.
