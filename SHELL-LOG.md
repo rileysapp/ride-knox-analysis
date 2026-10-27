@@ -13,7 +13,7 @@ trip_id,start_time,end_time,start_station_id,start_station_name,end_station_id,r
 $ wc -l trips_2025.csv
 250601 trips_2025.csv
 
-0b.
+Q0c. Instead of rows, wc -l counts lines, which includes the header. Using tail -n +2 would include everything except the header, i.e. dropping the offending line before counting.
 ```
 ## Part 1
 ## Part 10
