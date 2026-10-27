@@ -128,6 +128,58 @@ trip_id,start_time,end_time,start_station_id,start_station_name,end_station_id,r
 
 This replaces the .columns pandas attribute.
 ```
+## Part 4
+```
+4a.
+$ grep -c ",2025-09" trips_2025.csv
+23202
+
+4b.
+$ grep -c "member" trips_2025.csv
+153388
+
+$ grep -c -i "member" trips_2025.csv
+158927
+
+Adding -i makes a command ignore case, so it returns output for "member", "MEMBER", and "Member" equally.
+
+4c. 
+$ grep -v -c ",S24," trips_2025.csv
+246853
+
+4d.
+$ cut -d, -f7 trips_2025.csv | head -4
+rider_type
+casual
+casual
+member
+
+Because cut counts fields by position, you can use head -1 to find out the header in each field (found in Q3e).
+
+Q4e.
+The case-insensitive number (158,927 trips) is the answer to "how many member trips are there". This is connected to the meta-rule that a wrong pipleine returns a number, not an error, because whether or not the case insensitivity was applied, Bash would return a number without any indication that something was wrong.
+
+Q4f.
+The case-insensitive number agrees with the anchor. If a classmate's did not, it is most likely that they did not use -i to make their command case insensitive.
+```
+## Part 5
+```
+5a.
+$ grep ',2025-09' trips_2025.csv > out/trips_2025_09.csv
+
+$ grep ',2025-10' trips_2025.csv > out/trips_2025_10.csv
+
+$ grep ',2025-11' trips_2025.csv > out/trips_2025_11.csv
+
+
+5b.
+$ wc -l out/trips_2025_*.csv
+  23202 out/trips_2025_09.csv
+  19795 out/trips_2025_10.csv
+  13750 out/trips_2025_11.csv
+  56747 total
+
+```
 ## Part 10
 ## Reflection
-R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain.
+R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain. I used it in part 5a to explain how to contain the selected rows when using grep.
