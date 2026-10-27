@@ -89,6 +89,45 @@ In 2a, the shell replaced the * with the matching file names before running the 
 Q2e.
 The half-year files contains about 54.8% of the rows as trips_2025; however, it is about 59.1% of its bytes (note: I used ls -lh trips_2025.csv to find the size of trips_2025). This tells you that the rows in the half-year contain more data than the rows in trips_2025. One kind of CSV column that would break this relationship is if a column broke normalization rule 1NF and could contain multiple values per cell: because some rows could have much more information in them than other rows, this would make it so that the rows in the half-year are necessarily more data-heavy than in 2025.
 ```
+## Part 3
+```
+3a.
+$ tail -3 trips_2025.csv
+T0029313,2025-12-31 23:33:25,2025-12-31 23:47:31,S08,Student Union - UT,S09,CASUAL,classic
+T0233859,2025-12-31 23:40:52,2025-12-31 23:51:14,S04,Old City - Jackson Ave,S04,member,electric
+T0140894,2025-12-31 23:42:04,2026-01-01 00:37:04,S12,Fort Sanders - Laurel Ave,S12,casual,electric
+
+
+Printing the tail of a CSV can tell you if the file finished writing; if it didn't, then you would not be able to tell only by using head.
+
+3b.
+$ head -n 504 trips_2025.csv | tail -n 5
+T0193042,2025-01-02 12:56:34,2025-01-02 13:07:49,S06,HODGES LIBRARY,S08,member,classic
+T0109309,2025-01-02 12:58:14,2025-01-02 13:08:04,S05,World's Fair Park,S04,casual,classic
+T0017188,2025-01-02 12:59:01,2025-01-02 13:17:00,S11,Cumberland Ave & 17th St,S02,member,electric
+T0004700,2025-01-02 12:59:54,2025-01-02 13:37:33,S07,The Hill - Ayres Hall,S02,member,electric
+T0183710,2025-01-02 12:59:57,2025-01-02 13:14:14,S01,Market Square,S01,casual,classic
+
+$ sed -n '500,504p' trips_2025.csv
+T0193042,2025-01-02 12:56:34,2025-01-02 13:07:49,S06,HODGES LIBRARY,S08,member,classic
+T0109309,2025-01-02 12:58:14,2025-01-02 13:08:04,S05,World's Fair Park,S04,casual,classic
+T0017188,2025-01-02 12:59:01,2025-01-02 13:17:00,S11,Cumberland Ave & 17th St,S02,member,electric
+T0004700,2025-01-02 12:59:54,2025-01-02 13:37:33,S07,The Hill - Ayres Hall,S02,member,electric
+T0183710,2025-01-02 12:59:57,2025-01-02 13:14:14,S01,Market Square,S01,casual,classic
+
+3.
+$ wc -l stations.xlsx
+48 stations.xlsx
+
+Q3d.
+wc -l does not return reliable data for stations.xlsx because it's a zip file, not text. Instead, it counted newline characters. To confirm this, you could convert it in Python, then the shell can work.
+
+Q3e.
+$ head -1 trips_2026_07.csv
+trip_id,start_time,end_time,start_station_id,start_station_name,end_station_id,rider_type,bike_type
+
+This replaces the .columns pandas attribute.
+```
 ## Part 10
 ## Reflection
-R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c.
+R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c. I used AI to check my code using head and tail connected by a pipe in 3b. I used it in part Q3d to explain what wc -l returns when it cannot read a xlsx file, which it returned that it counts newline characters, which I asked it to explain.
