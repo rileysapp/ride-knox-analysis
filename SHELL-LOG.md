@@ -63,7 +63,32 @@ SQL-project.ipynb    project.ipynb                                     trips_per
 .gitignore is visible in this listing but was not visible under plain ls.
 
 Q1c. Output is derived and regenerable, so it belongs in .gitignore to avoid Git status nagging about it. For this week's outputs in particular, someone would need the raw data in order to regenerate them, which protects the privacy of Ride Knox's data.
+```
+## Part 2
+```
+2a.
+$ wc -l trips*.csv
+  250601 trips_2025.csv
+   33086 trips_2026_07.csv
+  137342 trips_2026_h1.csv
+  421029 total
 
+2b. 
+$ ls -lh trips_2026*.csv
+-rw-r--r-- 1 shana 197609 2.9M Oct 20 18:34 trips_2026_07.csv
+-rw-r--r-- 1 shana 197609  13M Sep 29 22:48 trips_2026_h1.csv
+
+2c.
+$ ls -lh stations*.xlsx
+-rw-r--r-- 1 shana 197609 15K Aug 27 17:29 stations.xlsx
+-rw-r--r-- 1 shana 197609 15K Sep 29 22:48 stations_2026.xlsx
+
+Q2d.
+In 2a, the shell replaced the * with the matching file names before running the command, which is why rm *.csv is dangerous--it reads this as removing every file individually.
+
+Q2e.
+The half-year files contains about 54.8% of the rows as trips_2025; however, it is about 59.1% of its bytes (note: I used ls -lh trips_2025.csv to find the size of trips_2025). This tells you that the rows in the half-year contain more data than the rows in trips_2025. One kind of CSV column that would break this relationship is if a column broke normalization rule 1NF and could contain multiple values per cell: because some rows could have much more information in them than other rows, this would make it so that the rows in the half-year are necessarily more data-heavy than in 2025.
 ```
 ## Part 10
 ## Reflection
+R3. AI Disclosure: I used a generative AI tool to explain how to use the asterisk wildcard, which I used for parts 2a-c.
