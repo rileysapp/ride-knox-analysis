@@ -246,6 +246,40 @@ This file is carrying exact duplicates; therefore, running tail -n +2 trips_2025
 ```
 ## Part 7
 ```
+7a.
+$ cut -d, -f5 trips_2025.csv | tail -n +2 | grep -i 'Market Square' | sort |uniq -c | sort -rn
+  20781 Market Square
+    644   Market Square
+    461 MARKET SQUARE
+    429 Market Square
+    341 market square
+There are 5 spellings.
+
+7b.
+$ cut -d, -f5 trips_2025.csv | tail -n +2 | sed 's/^ *//; s/ *$//' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn | head -n 5
+  26112 hodges library
+  25044 student union - ut
+  22656 market square
+  18983 cumberland ave & 17th st
+  16570 gay street & union ave
+
+Q7c.
+The count in 7b for Market Square is 22,656, while the most common spelling in 7a is 20,781; this means that 1,875 trips would have been uncredited to Market Square if sed and tr were skipped (22,656-20,781).
+
+Q7d.
+  26112 hodges library
+  25044 student union - ut
+  22656 market square
+  18983 cumberland ave & 17th st
+  16570 gay street & union ave
+
+  26112 S06
+  25044 S08
+  22656 S01
+  18983 S11
+  16570 S02
+
+  If the two rankings did not match, it would mean that part 7's pipeline had missed some piece of normalization and that some station names were not being credited to their correct station ID.
 
 ```
 ## Part 10
