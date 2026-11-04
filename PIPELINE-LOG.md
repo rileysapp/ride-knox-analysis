@@ -86,9 +86,22 @@ Row count: 250600
 Distinct-row count: 250000
 Difference: 600
 
+1b. $ grep -c "NOSUCHPATTERN" trips_2025.csv > out/junk.txt
+echo "Exit code: $?"
+cat out/junk.txt
+Exit code: 1
+0
+
+$ bash ./pipeline/check_data.sh
+echo "Exit code: $?"
+Row count: 250600
+Distinct-row count: 250000
+Difference: 600
+Exit code: 0
+
 ```
 ## Part 9
 ## Reflection
 ```
-AI Disclosure: I used a generative AI tool to try to troubleshoot why I was not getting pipeline/ to show up in my Untracked files in part 0a, but I did not end up using it. I also used it to troubleshoot in part 0c, as I continously had Bash exit the program when using set -e instead of returning the exit code; it explained how using set -o pipefail fixes the failures hidden inside pipelines. I used it in part 1a for how to report the row counts and difference.
+AI Disclosure: I used a generative AI tool to try to troubleshoot why I was not getting pipeline/ to show up in my Untracked files in part 0a, but I did not end up using it. I also used it to troubleshoot in part 0c, as I continously had Bash exit the program when using set -e instead of returning the exit code; it explained how using set -o pipefail fixes the failures hidden inside pipelines. I used it in part 1a for how to report the row counts and difference. In 1b, I could not get the terminal to not close whenever I tried running grep -c "NOSUCHPATTERN" trips_2025.csv > out/junk.txt, so I used it to troubleshoot and fix my code.
 ```
