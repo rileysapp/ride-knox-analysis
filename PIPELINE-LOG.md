@@ -111,9 +111,10 @@ Difference: 0
 Fallback
 
 Q1d. out/junk.txt contained only the number 0. This is worse than an empty file, because it appears to be an answer. Therefore, it would silently be wrong. This connects to the meta-rule, as a wrong pipeline returns a number (0), not an error, and a retyped pipeline returns a different number with nothing to diff.
+
+I apologize, I do not understand any part of this assignment or unit. I will be coming to office hours.
 ```
-## Part 9
 ## Reflection
 ```
-AI Disclosure: I used a generative AI tool to try to troubleshoot why I was not getting pipeline/ to show up in my Untracked files in part 0a, but I did not end up using it. I also used it to troubleshoot in part 0c, as I continously had Bash exit the program when using set -e instead of returning the exit code; it explained how using set -o pipefail fixes the failures hidden inside pipelines. I used it in part 1a for how to report the row counts and difference. In 1b, I could not get the terminal to not close whenever I tried running grep -c "NOSUCHPATTERN" trips_2025.csv > out/junk.txt, so I used it to troubleshoot and fix my code. I used it in 1c to identify -eq 600 and -eq 601.
+AI Disclosure: I used a generative AI tool to try to troubleshoot why I was not getting pipeline/ to show up in my Untracked files in part 0a, but I did not end up using it. I also used it to troubleshoot in part 0c, as I continously had Bash exit the program when using set -e instead of returning the exit code; it explained how using set -o pipefail fixes the failures hidden inside pipelines. I used it in part 1a for how to report the row counts and difference. In 1b, I could not get the terminal to not close whenever I tried running grep -c "NOSUCHPATTERN" trips_2025.csv > out/junk.txt, so I used it to troubleshoot and fix my code. I used it in 1c to identify -eq 600 and -eq 601. I started using it in part 2a, but I could not understand what the question was asking nor what the AI was trying to direct me to do, so I did not include that in my answer.
 ```
