@@ -63,9 +63,32 @@ Q0d. One piece of syntax in part 2 that would fail on a shell that is not Bash i
 ```
 ## Part 1
 ```
+1a.
+$ cat > pipeline/check_data.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+> repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+csv="$repo_root/trips_2025.csv"
+
+row_count=$(tail -n +2 "$csv" | awk 'END {print NR+0}')
+distinct_count=$(tail -n +2 "$csv" | sort -u | awk 'END {print NR+0}')
+difference=$((row_count - distinct_count))
+
+echo "Row count: $row_count"
+echo "Distinct-row count: $distinct_count"
+echo "Difference: $difference"
+EOF
+
+shana@Sapp-Acer MINGW64 ~/Downloads/DATA501/ride-knox-analysis (feature/bash-week11-automation)
+$ chmod +x pipeline/check_data.sh
+./pipeline/check_data.sh
+Row count: 250600
+Distinct-row count: 250000
+Difference: 600
+
 ```
 ## Part 9
 ## Reflection
 ```
-AI Disclosure: I used a generative AI tool to try to troubleshoot why I was not getting pipeline/ to show up in my Untracked files in part 0a, but I did not end up using it. I also used it to troubleshoot in part 0c, as I continously had Bash exit the program when using set -e instead of returning the exit code; it explained how using set -o pipefail fixes the failures hidden inside pipelines.
+AI Disclosure: I used a generative AI tool to try to troubleshoot why I was not getting pipeline/ to show up in my Untracked files in part 0a, but I did not end up using it. I also used it to troubleshoot in part 0c, as I continously had Bash exit the program when using set -e instead of returning the exit code; it explained how using set -o pipefail fixes the failures hidden inside pipelines. I used it in part 1a for how to report the row counts and difference.
 ```
