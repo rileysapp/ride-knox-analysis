@@ -93,5 +93,48 @@ Q2e. read_csv() located start_time and end_time as <dttm>; if they were instead 
 
 Q2f. In R, both stations and trips are tibbles, and a column is called a vector.
 ```
+## Part 3
+```
+3a. clean <- trips |>
+  distinct() |>
+  filter(
+    start_station_id != "S99",
+    is.na(end_station_id) | end_station_id != "S99") |>
+  mutate(
+    rider_type = str_to_lower(str_trim(rider_type)),
+    duration_min = as.numeric(difftime(end_time, start_time, units = "mins"))) |>
+  filter(duration_min >= 1, duration_min <= 1440)
+  > nrow(clean)
+[1] 247967
+
+3b. > clean |> filter(start_station_id == end_station_id) |> nrow()
+[1] 30112
+There were 30,112 round trips.
+
+3c. > clean |> filter(end_station_id != start_station_id) |> nrow()
+[1] 214129
+There were 214,129 one-way trips.
+
+3d. 3b and 3c add up to 244,241, which is a 3,726 gap from the total number of cleaned trips. R calculated trips in which the end station was equal to or not equal to the start station, but if the end station was null, it would be excluded, meaning that R did not account for trips where the end station is missing.
+> clean |> filter(is.na(end_station_id) | end_station_id != start_station_id) |> nrow()
+[1] 217855
+> clean |> filter(is.na(end_station_id)) |> nrow()
+[1] 3726
+I chose to fold the end unknown trips in with one-way trips, as they are trips that are not identified as having started and ended in the same station.
+
+3e. One-way: 30,112
+Round trip: 214,129
+End unknown: 3,726
+30112 + 214129 + 3726 = 247967
+
+Q3f. In R, NA != "S99" is NA, and filter() drops rows that aren't TRUE, which means that it would be dropped. A student who only ever tested their pipeline against a row count would never find it because the row count does not indicate which rows contain NA values.
+
+Q3g. One could choose to keep 3c's number as the one-way count and create a new category for the missing end station trips, as there is no way to be certain if these trips were round trip or one-way, as the end station is not identified.
+```
+## Part 4
+
 ## Part 11
 ## Reflection
+```
+AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station.
+```
