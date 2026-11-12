@@ -37,6 +37,27 @@ I did not need to type a full path to the data because the project was created i
 Q0d. install.packages() belongs in the console, not the script. This is because like module 11's reproducibility rule, which states to use the caller's value if they set one, otherwise fall back to a sane default. This allows different computers with different versions to run the project. It is also only necessary once per machine, so running it upon every start is expensive.
 ```
 ## Part 1
-...
+```
+1a. > north_docks <- c(12, 10, 12)
+> length(north_docks)
+[1] 3
+> mean(north_docks)
+[1] 11.33333
+> sum(north_docks)
+[1] 34
+I verified that sum() was the correct name by using the Help tab in RStudio and reading what the command does.
+
+1b. > docks_share <- (north_docks / sum(north_docks)) * 100
+> docks_share[1]
+[1] 35.29412
+
+1c. > north_docks > 10
+[1]  TRUE FALSE  TRUE
+> mean(north_docks > 10)
+[1] 0.6666667
+66.67% of stations in north_docks have greater than 10 docks.
+
+Q1d. Running the vector north_docks > 10 returns boolean true and false, which are equal to 1 and 0. In mean(north_docks), the command calculates the mean of the 0s and 1s, which returns the proportion of values that meet the criteria, which ultimately returns a proportion of stations with more than 10 docks.
+```
 ## Part 11
 ## Reflection
