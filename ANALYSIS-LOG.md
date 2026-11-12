@@ -322,8 +322,21 @@ Q9d. While classic and electric bikes seemed to have different average trip dura
 
 Q9e. If I wanted to make the boxes look meaningfully different, I would not exclude the outliers and a reader would conclude that riders of each bike type take drastically different trip durations, when in reality they are similar. This is a class crime because it misrepresents the data.
 ```
+## Part 10
+```
+10a. hourly <- clean |> count(hour, bike_type)
+
+10b. ggplot(hourly, aes(x = hour, y = n)) + geom_col() +
+  facet_wrap(~ bike_type, scales = "fixed")  +
+  labs(title = "While there were more classic trips than electric trips, the general shape of distribution per hour is the same", x = "Time", y = "Number of Trips") + ops_theme
+
+
+10c. With free_y, the ridership of each bike type appears to be the same, because they are fitted on the y-axis to best fit.
+
+Q10d. Each bike type's peak hour was 5:00p, but the classic ridership was over double the electric ridership. The free-scales version makes the two look like they had similar ridership, which is not true.
+```
 ## Part 11
 ## Reflection
 ```
-AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides. I used it for part 8a to explain how to order the y-axis by arrivals_per_dock values. I used it in part 9b for how to suppress the outlier points and changing the y-axis range by zooming.
+AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides. I used it for part 8a to explain how to order the y-axis by arrivals_per_dock values. I used it in part 9b for how to suppress the outlier points and changing the y-axis range by zooming. I also used it in 10b because I was getting an error because of my column name and needed to troubleshoot.
 ```
