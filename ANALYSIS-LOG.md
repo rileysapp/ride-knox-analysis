@@ -336,6 +336,50 @@ Q9e. If I wanted to make the boxes look meaningfully different, I would not excl
 Q10d. Each bike type's peak hour was 5:00p, but the classic ridership was over double the electric ridership. The free-scales version makes the two look like they had similar ridership, which is not true.
 ```
 ## Part 11
+11a. ops_theme <- theme_minimal(base_size = 14) +   theme(
+  plot.title = element_text(face = "bold"),
+  panel.grid.minor = element_blank()
+)
+ggplot(mix,aes(x = month, y = casual_pct)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_vline(xintercept = 7, linetype = "dashed", colour = "grey40")
++ annotate("text", x = 7, y = 100, label = "July 1 price increase") +
+  labs(title    = "Casual ridership dropped 10.4 percentage points in July",
+       subtitle = "Casual rider share of total ridership per month by rider type, 2025",
+       x = NULL, y = "Trips", colour = "Rider type",
+       caption  = "n = 247,967 trips, Ride Knox export.") +
+  ops_theme
+ggsave("figs/casual_ridership_share.png", plot = p,
+       width = 9, height = 5, dpi = 300, bg = "white")
+
+ggplot(per_station,aes(x = arrivals_per_dock, y=reorder(station_name, arrivals_per_dock), fill = neighborhood)) +
+  geom_col(fill = "grey35") +
+  labs(title    = "Pressure on stations varies wildly, by as much as 1174 arrivals per dock to 174 arrivals per dock",
+       subtitle = "Arrivals per dock per station in 2025",
+       x = NULL, y = "Trips", colour = "Rider type",
+       caption  = "n = 247,967 trips, Ride Knox export.") +
+  ops_theme
+ggsave("figs/arrivals_per_dock_per_station_by_trips.png", plot = p,
+       width = 9, height = 5, dpi = 300, bg = "white")
+
+clean |> group_by(bike_type) |> summarise(median(duration_min))
+ggplot(clean, aes(x = bike_type, y = duration_min)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_cartesian(ylim = c(0, 60)) +
+  labs(title = "Without the outlier points, classic and electric bike duration is nearly identical",
+       x = "Bike Type",
+       y = "Trip Duration in Minutes"
+  ) + ops_theme
+ggsave("figs/bike_type_by_trip_duration.png", plot = p,
+       width = 9, height = 5, dpi = 300, bg = "white")
+
+hourly <- clean |> count(hour, bike_type)
+ggplot(hourly, aes(x = hour, y = n)) + geom_col() +
+  facet_wrap(~ bike_type, scales = "fixed")  +
+  labs(title = "While there were more classic trips than electric trips, the general shape of distribution per hour is the same", x = "Time", y = "Number of Trips") + ops_theme
+ggsave("figs/trips_per_hour_per_bike_type.png", plot = p,
+       width = 9, height = 5, dpi = 300, bg = "white")
 ## Reflection
 ```
 AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides. I used it for part 8a to explain how to order the y-axis by arrivals_per_dock values. I used it in part 9b for how to suppress the outlier points and changing the y-axis range by zooming. I also used it in 10b because I was getting an error because of my column name and needed to troubleshoot.
