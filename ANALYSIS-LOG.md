@@ -59,5 +59,39 @@ I verified that sum() was the correct name by using the Help tab in RStudio and 
 
 Q1d. Running the vector north_docks > 10 returns boolean true and false, which are equal to 1 and 0. In mean(north_docks), the command calculates the mean of the 0s and 1s, which returns the proportion of values that meet the criteria, which ultimately returns a proportion of stations with more than 10 docks.
 ```
+## Part 2
+```
+2a. > spec(trips)
+cols(
+  trip_id = col_character(),
+  start_time = col_datetime(format = ""),
+  end_time = col_datetime(format = ""),
+  start_station_id = col_character(),
+  start_station_name = col_character(),
+  end_station_id = col_character(),
+  rider_type = col_character(),
+  bike_type = col_character()
+)
+
+2b. > glimpse(stations)
+Rows: 24
+Columns: 7
+$ station_id     <chr> "S01", "S02", "S03"…
+$ station_name   <chr> "Market Square", "G…
+$ neighborhood   <chr> "Downtown", "Downto…
+$ latitude       <dbl> 35.9649, 35.9662, 3…
+$ longitude      <dbl> -83.9197, -83.9184,…
+$ docks          <dbl> 20, 16, 12, 16, 20,…
+$ year_installed <dbl> 2022, 2022, 2022, 2…
+
+2c.> nrow(count(trips, start_station_name))
+[1] 73
+
+Q2d. In the Help tab, read_csv() is stated to trim white space; if trim_ws = FALSE, then the count would be 121. readr trims the white space before you look at it.
+
+Q2e. read_csv() located start_time and end_time as <dttm>; if they were instead written in <chr>, then the mutate() call would not be able to parse specific months or hours.
+
+Q2f. In R, both stations and trips are tibbles, and a column is called a vector.
+```
 ## Part 11
 ## Reflection
