@@ -279,10 +279,26 @@ Q7f. If the y-axis was pinned at 20, then the apparent size of the July drop wou
 ```
 ## Part 8
 ```
+8a. ggplot(per_station,aes(x = arrivals_per_dock, y=reorder(station_name, arrivals_per_dock))) +
+  geom_col()
 
+8b. ggplot(per_station,aes(x = arrivals_per_dock, y=reorder(station_name, arrivals_per_dock), fill = neighborhood)) +
+  geom_col(fill = "grey35")
+
+8c. ggplot(per_station,aes(x = arrivals_per_dock, y=reorder(station_name, arrivals_per_dock), fill = neighborhood)) +
+  geom_col(fill = "grey35") +
+  labs(title    = "Pressure on stations varies wildly, by as much as 1174 arrivals per dock to 174 arrivals per dock",
+       subtitle = "Arrivals per dock per station in 2025",
+       x = NULL, y = "Trips", colour = "Rider type",
+       caption  = "n = 247,967 trips, Ride Knox export.") +
+  ops_theme
+
+Q8d. A constant grey shows up well on black, but if the image is transparent, it may be placed on a grey background and would not be accessible for colorblind individuals. fill fixes this problem by making the version have a constant background, meaning it would be visible without the worry of what is underneath it.
+
+Q8e. This would make it more difficult to read from six feet away because some fills are brighter than others, making them stand out more and distracting from the data. One change that could be made would be to make each bar a constant color and to create a high-contrast background so that the transparent image could not make the colors less contrasted.
 ```
 ## Part 11
 ## Reflection
 ```
-AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides.
+AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides. I used it for part 8a to explain how to order the y-axis by arrivals_per_dock values.
 ```
