@@ -184,8 +184,105 @@ Q5d. The count showcases the raw number of lost trips, which in practice means t
 
 Q5e. Because casual trips tend to be longer than member trips, the median trip length becomes skewed more toward member trips' lengths as they begin to make up a larger share of the total ridership. This causes the median trip to decrease despite individual riders' habits not changing.
 ```
+## Part 6
+```
+6a. > per_station <- clean |>
++   count(end_station_id, name = "arrivals")
+> per_station |> print(n=24)
+# A tibble: 25 × 2
+   end_station_id arrivals
+   <chr>             <int>
+ 1 S01               22131
+ 2 S02               16141
+ 3 S03               10507
+ 4 S04               13922
+ 5 S05               15021
+ ... + 20 more
+NA is not a real station; it is all of the trips with a missing end_station_id. It has 3,726 trips in it.
+
+6b. > per_station <- clean |>
++   count(end_station_id, name = "arrivals") |>
++ #per_station |> print(n=25)
++   filter(!is.na(end_station_id)) |>  
++   left_join(stations, by = c("end_station_id" = "station_id")) |>
++   mutate(arrivals_per_dock = round(arrivals / docks)) |>
++   arrange(desc(arrivals_per_dock))
+
+6c. > per_station |> print(n=24)
+# A tibble: 24 × 9
+   end_station_id arrivals station_name              neighborhood  latitude longitude docks year_installed arrivals_per_dock
+   <chr>             <int> <chr>                     <chr>            <dbl>     <dbl> <dbl>          <dbl>             <dbl>
+ 1 S11               18783 Cumberland Ave & 17th St  Fort Sanders      36.0     -83.9    16           2022              1174
+ 2 S07               14034 The Hill - Ayres Hall     UT Campus         36.0     -83.9    12           2022              1170
+ 3 S01               22131 Market Square             Downtown          36.0     -83.9    20           2022              1107
+ 4 S06               25301 Hodges Library            UT Campus         36.0     -83.9    24           2022              1054
+ 5 S08               24263 Student Union - UT        UT Campus         36.0     -83.9    24           2022              1011
+ ...
+ 22 S21                2892 Caswell Park              East Knoxvil…     36.0     -83.9    10           2024               289
+23 S24                1931 Sequoyah Hills Park       Sequoyah Hil…     35.9     -84.0    10           2025               193
+24 S23                2087 Bearden - Kingston Pike   Bearden           35.9     -84.0    12           2025               174
+The most pressured station is Cumberland Ave, and the least pressured station is Bearden. The ratio is 1174:174.
+
+6d. > total_arrivals <- sum(per_station$arrivals)
+> total_trips <- nrow(clean)
+> (total_trips - total_arrivals)
+[1] 3726
+The total trips minus the total arrivals is 3,726, which is the number of trips with no end_station_id.
+
+Q6e. One operational question that the arrival ranking answers is how many bikes end up at a station--the van will need to visit stations with higher arrivals more often to pick up bikes and distribute them to other stations with higher departures, so both are important for operational use.
+```
+## Part 7
+```
+7a. ops_theme <- theme_minimal(base_size = 14) +   theme(
+  plot.title = element_text(face = "bold"),
+  panel.grid.minor = element_blank()
+)
+
+7b. > ggplot(mix,aes(x = month, y = casual_pct,
++   geom_line(linewidth = 1) +
++   geom_point(size = 2) +
++   )
+
+7c. ggplot(mix,aes(x = month, y = casual_pct,
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_vline(xintercept = 7, linetype = "dashed", colour = "grey40")
+  ) + annotate("text", x = 7.4, y = 4500, label = "July 1 price increase")
+
+7d.ggplot(mix,aes(x = month, y = casual_pct)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_vline(xintercept = 7, linetype = "dashed", colour = "grey40")
+  + annotate("text", x = 7, y = 100, label = "July 1 price increase") +
+  labs(title    = "Casual ridership dropped 10.4 percentage points in July",
+       subtitle = "Casual rider share of total ridership per month by rider type, 2025",
+       x = NULL, y = "Trips", colour = "Rider type",
+       caption  = "n = 247,967 trips, Ride Knox export.")
+
+7e. ops_theme <- theme_minimal(base_size = 14) +   theme(
+  plot.title = element_text(face = "bold"),
+  panel.grid.minor = element_blank()
+)
+ggplot(mix,aes(x = month, y = casual_pct)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_vline(xintercept = 7, linetype = "dashed", colour = "grey40")
+  + annotate("text", x = 7, y = 100, label = "July 1 price increase") +
+  labs(title    = "Casual ridership dropped 10.4 percentage points in July",
+       subtitle = "Casual rider share of total ridership per month by rider type, 2025",
+       x = NULL, y = "Trips", colour = "Rider type",
+       caption  = "n = 247,967 trips, Ride Knox export.") +
+  ops_theme
+The figure shows a sharp drop off in the share of casual ridership among total ridership at the dashed vertical line, which is at July.
+
+Q7f. If the y-axis was pinned at 20, then the apparent size of the July drop would be much greater than when compared to when it is pinned at 0. This is a crime on the class ledger, as it does not accurately represent the data.
+```
+## Part 8
+```
+
+```
 ## Part 11
 ## Reflection
 ```
-AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number.
+AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides.
 ```
