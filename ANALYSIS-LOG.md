@@ -297,8 +297,33 @@ Q8d. A constant grey shows up well on black, but if the image is transparent, it
 
 Q8e. This would make it more difficult to read from six feet away because some fills are brighter than others, making them stand out more and distracting from the data. One change that could be made would be to make each bar a constant color and to create a high-contrast background so that the transparent image could not make the colors less contrasted.
 ```
+## Part 9
+```
+9a. > clean |> group_by(bike_type) |> summarise(median(duration_min))
+# A tibble: 2 × 2
+  bike_type `median(duration_min)`
+  <chr>                      <dbl>
+1 classic                     13.7
+2 electric                    13.8
+
+9b. ggplot(clean, aes(x = bike_type, y = duration_min)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_cartesian(ylim = c(0, 60))
+
+9c. ggplot(clean, aes(x = bike_type, y = duration_min)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_cartesian(ylim = c(0, 60)) +
+  labs(title = "Without the outlier points, classic and electric bike duration is nearly identical",
+       x = "Bike Type",
+       y = "Trip Duration in Minutes"
+  ) + ops_theme
+
+Q9d. While classic and electric bikes seemed to have different average trip duration, this was likely due to outliers. A boxplot reveals that, without the outliers, trip duration is nearly identical between the two.
+
+Q9e. If I wanted to make the boxes look meaningfully different, I would not exclude the outliers and a reader would conclude that riders of each bike type take drastically different trip durations, when in reality they are similar. This is a class crime because it misrepresents the data.
+```
 ## Part 11
 ## Reflection
 ```
-AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides. I used it for part 8a to explain how to order the y-axis by arrivals_per_dock values.
+AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number. I used it in part 6a to troubleshoot why I was receiving an error for the column I was trying to create. I used AI for part 7a, because I did not know what qualified as a theme override--it gave me two examples of theme overrides that I decided to use, because I wasn't sure if geom_point() or geom_hline() were considered theme overrides. I used it for part 8a to explain how to order the y-axis by arrivals_per_dock values. I used it in part 9b for how to suppress the outlier points and changing the y-axis range by zooming.
 ```
