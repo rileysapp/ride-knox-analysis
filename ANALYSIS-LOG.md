@@ -132,9 +132,31 @@ Q3f. In R, NA != "S99" is NA, and filter() drops rows that aren't TRUE, which me
 Q3g. One could choose to keep 3c's number as the one-way count and create a new category for the missing end station trips, as there is no way to be certain if these trips were round trip or one-way, as the end station is not identified.
 ```
 ## Part 4
+```
+4a. > clean <- clean |>
++   mutate(
++     month = month(start_time),
++     hour = hour(start_time)
++     )
 
+4b. > clean <- clean |>
++   mutate(
++     month = month(start_time, label = TRUE),
++     hour = hour(start_time)
++     )
+> clean <- clean |>
++   mutate(
++     is_evening = (hour>=16)
++   )
+> mean(clean$is_evening)
+[1] 0.40457
+
+Q4c. By returning a label rather than a number,  a chart with the months as an x-axis will return each month as a discrete value rather than a continuous one.
+
+Q4d. mutate() adds or overwrites columns, and later expressions can use earlier ones, even within the same call, which is why both mutates could have been done in the same call. However, a reviewer may prefer you write it as two, so that they can more easily refer to the effectiveness of one or the other without accidentally disabling parts that they didn't mean to (similar to why you shouldn't commit multiple things at once).
+```
 ## Part 11
 ## Reflection
 ```
-AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station.
+AI Disclosure. I used a generative AI tool in part 3a to troubleshoot how to filter out S99 without also dropping trips with a missing end station. I used it for part 4b to explain how to make the month column return as a label instead of a number.
 ```
