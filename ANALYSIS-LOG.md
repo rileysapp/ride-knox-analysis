@@ -155,6 +155,35 @@ Q4c. By returning a label rather than a number,  a chart with the months as an x
 
 Q4d. mutate() adds or overwrites columns, and later expressions can use earlier ones, even within the same call, which is why both mutates could have been done in the same call. However, a reviewer may prefer you write it as two, so that they can more easily refer to the effectiveness of one or the other without accidentally disabling parts that they didn't mean to (similar to why you shouldn't commit multiple things at once).
 ```
+## Part 5
+```
+5a. mix <- clean |>
+  group_by(month) |>
+  summarise(trips = n(), casual_pct = (mean(rider_type == "casual")*100), median_min = median(duration_min), .groups = "drop")
+
+5b. > mix |> print(n=12)
+# A tibble: 12 × 4
+   month trips casual_pct median_min
+   <ord> <int>      <dbl>      <dbl>
+ 1 Jan   10791       43.5       14.1
+ 2 Feb   13280       42.7       14.0
+ 3 Mar   19725       43.4       14.3
+ 4 Apr   25396       44.3       14.2
+ 5 May   29613       44.6       14.4
+ 6 Jun   31279       44.2       14.2
+ 7 Jul   26926       33.8       13.5
+ 8 Aug   24611       30.4       13.4
+ 9 Sep   22947       27.4       13.1
+10 Oct   19568       25.5       13.0
+11 Nov   13587       24.4       13.0
+12 Dec   10244       22.7       12.8
+
+5c. The percentage-point drop in casual_pct from June to July is 10.4 (44.2-33.8), and the drop in median-min from June to December is 1.4 (14.2-12.8).
+
+Q5d. The count showcases the raw number of lost trips, which in practice means that you can measure lost revenue and actual ridership numbers. However, the share showcases the loss in casual ridership in comparison with member ridership--this can be more relevant for finding if the drop in casual ridership is correlated with a drop in total ridership, or if it is solely casual ridership that is impacted.
+
+Q5e. Because casual trips tend to be longer than member trips, the median trip length becomes skewed more toward member trips' lengths as they begin to make up a larger share of the total ridership. This causes the median trip to decrease despite individual riders' habits not changing.
+```
 ## Part 11
 ## Reflection
 ```
