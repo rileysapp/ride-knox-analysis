@@ -1,0 +1,410 @@
+---
+title: "Ride Knox: Sizing the July Price Effect"
+author: "Riley Sapp (rsapp4)"
+date: 11/17/26
+format:
+  html:
+    toc: true
+    code-fold: false
+execute:
+  warning: false
+  message: false
+---
+```{r}
+library(tidyverse)
+library(readxl)
+library(broom)
+```
+---
+## Part 0
+```
+0b. > R.version.string
+[1] "R version 4.6.2 (2026-10-29 ucrt)"
+
+Quarto version: 1.11.9
+
+0c.
+```{r}
+per_station <- clean |>
+  count(start_station_id, name = "trips") |>
+  left_join(stations, by = c("start_station_id" = "station_id"))
+
+print(per_station, width = Inf)
+
+fit_docks <- lm(trips ~ docks, data = per_station)
+tidy(fit_docks)
+```
+# A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  <chr>          <dbl>     <dbl>     <dbl>    <dbl>
+1 (Intercept)  -10922.     1905.     -5.73 9.09e- 6
+2 docks          1546.      132.     11.7  6.66e-11
+
+Q0d.Both readxl and broom ship with the tidyverse but need to be called using library(). These two ship with the tidyverse, meaning they are found within the package, while other functions are attached, meaning they are usable without specifying the package name.
+```
+## Part 1
+```
+1a.
+```{r}
+clean <- trips |>
+  distinct() |>
+  filter(
+    start_station_id != "S99",
+    is.na(end_station_id) | end_station_id != "S99"
+  ) |>
+  mutate(
+    rider_type = str_to_lower(str_trim(rider_type)),
+    duration_min = as.numeric(difftime(end_time, start_time, units = "mins"))
+  ) |>
+  filter(duration_min >= 1, duration_min <= 1440)
+nrow(clean)
+clean |> filter(start_station_id == end_station_id) |> nrow()
+clean |> filter(is.na(end_station_id)) |> nrow()
+nrow(clean)
+```
+> nrow(clean)
+[1] 247967
+
+1b.
+```{r}
+per_station <- clean |>
+  count(end_station_id, name = "arrivals") |>
+  filter(!is.na(end_station_id)) |>
+  left_join(stations, by = c("end_station_id" = "station_id")) |>
+  select(end_station_id, station_name, neighborhood, docks, year_installed, arrivals
+  )
+
+nrow(per_station)
+sum(per_station$arrivals)
+```
+> nrow(per_station)
+[1] 24
+> sum(per_station$arrivals)
+[1] 244241
+
+1c.
+```{r}
+daily <- clean |>
+  mutate(date = as_date(start_time)) |>
+  group_by(date) |>
+  summarize(
+  trips = n(),
+  casual_pct = mean(rider_type == "casual") * 100,
+  post_july = first(date) >= as_date("2025-07-01"),
+  .groups = "drop"
+)
+nrow(daily)
+```
+> nrow(daily)
+[1] 365
+
+Q1d. In the 24-row table, each row is a station; this can answer the finance director's question on which station gets the next twelve docks. In the 365-row table, each row is a day of the year; this can answer the finance director's question on when the "cliff" occurred and by how much.
+
+Q1e. This breaks step 2, which states that one row = one thing to be modeled. The classmate's daily would go wrong, as a share would not accurately model the effects of a variable (either day or rider type) and would instead show the share of a portion of each variable.
+```
+## Part 2
+```
+2a.
+```{r}
+fit_docks <- lm(arrivals ~ docks, data = per_station)
+tidy(fit_docks, conf.int = TRUE)
+glance(fit_docks)
+```
+docks estimate is 1515.839
+
+2b. The docks coefficient is 1515.839, which can be seen as the effect of docks on arrivals among stations with the same campus value.The 95% confidence interval is between conf.low (1240.987) and conf.high (1790.692).
+
+2c.In order to find the predicted arrivals, one would use the equation y = mx + b, in which the y-intercept is -10666.084, the slope is 1515.839, and the independent variable is the number of docks. So, the arrivals for each station would be predicted as follows:
+For 10 docks: 1515.839(10)-10666.084 = 4492.306 arrivals
+For 16 docks: 1515.839(16)-10666.084 = 13587.34 arrivals
+For 0 docks: 1515.839(0)-10666.084 = -10666.084 arrivals
+
+Q2d. For 0 docks, the prediction gives a negative number of arrivals, which is not possible. This illustrates that the line is fitted across where data is existing, but extrapolating is not something that it has obligation over.
+
+Q2e. r.squared is 0.8560393 and sigma is 2762.561. sigma would be more appropriate to give to the finance director, as it is the typical prediction error in the outcome's own units, while R^2 only rises as variables are added.
+```
+## Part 3
+```
+3a.
+```{r}
+augmented <- augment(fit_docks, data = per_station) |>
+  select(station_name, neighborhood, docks, arrivals,
+    .fitted,
+    .resid
+  ) |>
+  arrange(desc(.resid))
+head(augmented, 5)
+tail(augmented, 3)
+```
+First 5 rows:
+station_name
+<chr>
+neighborhood
+<chr>
+docks
+<dbl>
+arrivals
+<int>
+.fitted
+<dbl>
+.resid
+<dbl>
+The Hill - Ayres Hall	UT Campus	12	14034	7523.989	6510.011
+Cumberland Ave & 17th St	Fort Sanders	16	18783	13587.347	5195.653
+Krutch Park	Downtown	12	10507	7523.989	2983.011
+Gay Street & Union Ave	Downtown	16	16141	13587.347	2553.653
+Market Square	Downtown	20	22131	19650.705	2480.295
+
+Last 3 rows:
+station_name
+<chr>
+neighborhood
+<chr>
+docks
+<dbl>
+arrivals
+<int>
+.fitted
+<dbl>
+.resid
+<dbl>
+Sequoyah Hills Park	Sequoyah Hills	10	1931	4492.310	-2561.310
+World's Fair Park	World's Fair Park	20	15021	19650.705	-4629.705
+Bearden - Kingston Pike	Bearden	12	2087	7523.989	-5436.989
+3 rows
+
+3b. The station with the largest positive residual is The Hill - Ayres Hall. It has 12 docks, 14,034 arrivals, a fitted value of 7,523.989, and a residual of 6,510.011. This means that there is a demand of 6,510.011 that the dock count doesn't explain--the number of arrivals is 6,510.011 higher than the model would have predicted for its number of docks.
+
+3c.
+```{r}
+augmented_clean <- augmented |>
+  group_by(neighborhood) |>
+  summarize(stations = n(),
+            mean_residuals = mean(.resid),
+            .groups = "drop"
+) |>
+  arrange(desc(mean_residuals))
+
+print(augmented_clean)
+```
+> print(augmented_clean)
+# A tibble: 12 × 3
+   neighborhood      stations mean_residuals
+   <chr>                <int>          <dbl>
+ 1 Fort Sanders             2          3422.
+ 2 Downtown                 3          2672.
+ 3 UT Campus                4           989.
+ 4 Old City                 1           335.
+ 5 South Knoxville          3          -291.
+ 6 UT Ag Campus             1          -456.
+ 7 North Knoxville          3          -948.
+ 8 West Knoxville           1         -1074.
+ 9 East Knoxville           2         -1285.
+10 World's Fair Park        2         -1669.
+11 Sequoyah Hills           1         -2561.
+12 Bearden                  1         -5437.
+
+3d. 
+```{r}
+daily_sorted <- clean |>
+  left_join(stations, by = c("start_station_id" = "station_id")) |>
+  mutate(date = as_date(start_time)) |>
+  group_by(station_name, neighborhood) |>
+  summarize(
+    first_trip = min(date),
+    last_trip = max(date),
+    .groups = "drop"
+  ) |>
+  arrange(station_name)
+print(daily_sorted, n = 24)
+```
+Bearden and Sequoyah Hills both have a first trip of 2025-01-01 and a last trip of 2025-12-31. This insinuates that the trips were not only open for part of the year.
+
+Q3e. Arrivals per dock measures the real count of arrivals that a station experienced per each dock that it has, while the residuals measures the amount of arrivals which each station experienced that were not explained by the number of docks (i.e., the extent to which a station was more pressured than expected). The grant question is more explained by the residuals, as the number of arrivals per dock does not take into account the diminishing returns per dock (on account of the expected "base" number of arrivals per station, represented by the y-intercept); this means that the arrivals per dock ranking, while similar to the residuals ranking, is less accurate to reality.
+
+Q3f.The finance director should still not read Bearden's residual as if it is failing because its year_installed column shows that it was introduced in 2025; the station therefore is not established and would need time to produce expected results because riders are less familiar with it. Someone who did not complete 3d might assume that Bearden just performed poorly because it is a poor placement.
+```
+## Part 4
+```
+```{r}
+fit_two <- lm(arrivals ~ docks + year_installed, data = per_station)
+tidy(fit_two, conf.int = TRUE)
+```
+
+term
+<chr>
+estimate
+<dbl>
+std.error
+<dbl>
+statistic
+<dbl>
+p.value
+<dbl>
+conf.low
+<dbl>
+conf.high
+<dbl>
+(Intercept)	5814341.592	1014846.7785	5.729280	1.095610e-05	3703852.1814	7924831.003
+docks	1067.351	115.1889	9.266094	7.234097e-09	827.8027	1306.900
+year_installed	-2876.283	501.1126	-5.739794	1.069498e-05	-3918.4040	-1834.163
+3 rows
+
+4b. The docks coefficient from fit_docks is 1546, while the docks coefficient from fit_two is 1067.351. fit_two is more negative by 478.649 trips.
+
+4c.
+```{r}
+docks_fitted_by_year <- lm(docks ~ year_installed, data = stations)
+tidy(docks_fitted_by_year, conf.int = TRUE)
+
+stations |>
+  group_by(year_installed) |>
+  summarize(
+    mean_docks = mean(docks, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+The correlation between docks and year_installed is -2.950998; the mean number of docks installed in 2022 is 17.7778, in 2023 is 12.28571, in 2024 is 10.33333, and in 2025 is 11.00000. The docks coefficient is lower in the fit_two estimate because it controls for year as well, which has a negative coefficient (more recent stations have fewer docks). So, when controlled for both year and docks, the correlation between docks and arrivals is smaller.
+
+4d.
+```{r}
+tidy(fit_two, conf.int = TRUE) |>
+  filter(term != "(Intercept)") |>
+  ggplot(aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high)) +
+  geom_pointrange() +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    labs(
+      title = "The effect on arrivals is negative for year of installation and positive for number of docks",
+      x = "Estimate",
+      y = "Term"
+    ) + ops_theme
+```
+The plot is unreadable without filtering out the intercept row because the y-intercept is not an independent variable that affects the number of arrivals.
+
+Q4e. The year_installed coefficient, -2876.283, can be interpreted that, for each year that a station has been open, it can be predicted that that station sees an additional 2,876.283 arrivals per year. However, "install stations in earlier years" is not necessarily a recommendation that can be drawn from this, as those stations will be just as inefficient in their first year as they would be regardless of when they were installed.
+
+Q4f. 
+```{r}
+glance(fit_docks)
+glance(fit_two)
+```
+fit_docks's adj.r.squared is 0.8494956, and its sigma is 2762.561; fit_two's adj.r.squared is 0.9386211, and its sigma is 1764.196. year_installed earned its place because its sigma shows that it affected the arrivals more than a junk variable would have.
+```
+## Part 5
+```
+5a.
+```{r}
+daily |>
+  group_by(post_july) |>
+  summarize(mean_casual_pct = mean(casual_pct),
+  )
+```
+# A tibble: 2 × 2
+  post_july mean_casual_pct
+  <lgl>               <dbl>
+1 FALSE                43.8
+2 TRUE                 27.4
+
+5b.
+```{r}
+fit_share <- lm(casual_pct ~ post_july, data = daily)
+
+tidy(fit_share, conf.int = TRUE)
+glance(fit_share)
+```
+# A tibble: 2 × 7
+  term          estimate std.error statistic   p.value conf.low conf.high
+  <chr>            <dbl>     <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
+1 (Intercept)       43.8     0.244     180.  0             43.3      44.3
+2 post_julyTRUE    -16.4     0.344     -47.8 1.05e-158    -17.1     -15.7
+> glance(fit_share)
+# A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC deviance df.residual  nobs
+      <dbl>         <dbl> <dbl>     <dbl>     <dbl> <dbl>  <dbl> <dbl> <dbl>    <dbl>       <int> <int>
+1     0.863         0.863  3.28     2285. 1.05e-158     1  -951. 1907. 1919.    3910.         363   365
+
+The share of casual ridership was 16.4% lower after the July 1 change compared to the prior period, with 95% confidence that the decrease was between 15.7% and 17.1%.
+
+Q5d.R made a trendline along the estimate of impact of a casual trip occuring after July on number of arrivals. The intercept is the "base" number of trips that are unaffected by whether the trip is before or after July.
+
+Q5e.The count is affected by seasonality, as the raw number of trips would change a lot; however, the share of trips is less likely to be greatly impacted by seasonality, because it is likely that all riders would be affected equally by things like weather changes. However, the share model does still need to be analyzed: for example, member riders may have purchased a subscription for a full year, in which case they would be more likely to want to make the most of their membership and ride regardless of the weather, whereas a casual rider may opt out of riding in cold weather. Therefore, shares are likely less impacted by seasonality than raw count, but should still be taken into account.
+```
+## Part 6
+```
+```{r}
+residuals <- augment(fit_share, data = daily)
+residuals |>
+  ggplot(aes(x = date, y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  labs(
+    title = "There was a visible decrease in share of casual riders after July",
+    x = "Date",
+    y = "Impact of Cutoff on Share of Casual Riders"
+) +
+ops_theme
+```
+
+6b. 
+```{r}
+monthly_residuals <- residuals |>
+  mutate(
+    month = month(date, label = TRUE)
+) |>
+  group_by(month) |>
+  summarize(
+    mean_resid = mean(.resid),
+    .groups = "drop"
+)
+print(monthly_residuals)
+```
+> print(monthly_residuals)
+# A tibble: 12 × 2
+   month mean_resid
+   <ord>      <dbl>
+ 1 Jan      -0.249 
+ 2 Feb      -1.13  
+ 3 Mar      -0.363 
+ 4 Apr       0.485 
+ 5 May       0.800 
+ 6 Jun       0.371 
+ 7 Jul       6.37  
+ 8 Aug       2.98  
+ 9 Sep       0.0232
+10 Oct      -1.83  
+11 Nov      -2.95  
+12 Dec      -4.68 
+
+6c. The residuals shows that there is a strong peak in the share of casual riders that is unexplainable by factors such as number of docks per station, year that the station was created or seasonality, though the share quickly tapers off in a bell-shaped form. This residual model differs from the naive model, as the naive model does not control for seasonality.
+
+6d.
+```{r}
+augment(fit_share, data = daily) |>
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_hline(yintercept = 0) +
+geom_point(alpha = 0.4)
+
+```
+There are only two vertical strips because the post_july operator is Boolean and not continuous. The standard deviation of the residuals of trips after July is smaller than the standard deviation of the residuals of trips before July.
+
+Q6e. The LINE assumption that aligns with 6d is that the lm() p-value is assumed to be linear--March sees a higher standard deviation than October, meaning that the model is less reliable in March.
+
+Q6f. The LINE assumption that this violates is that the lm() p-value is assumed to be independent; however, autocorrelation is important to take into account. The slides use glm(family = binomial) to detect this; the part 5 interval is affected because the bimodial distribution would cause each of the two groups to be skewed toward to peak of the distribution.
+
+Q6g. The model could alternatively fit the data with a binomial distribution. However, the working version still returns an accurate estimate for each of the two groups.
+```
+## Parts 7 - 10
+```
+---
+```
+## Part 11
+```
+11a. There was a 16.4% decrease in share of casual riders after the July 1 change in price. When controlled for station data such as seasonality, year of installation, and number of docks, trips taken after July 1 made up a share of total ridership that was 16.4% lower than expected. One could interpret this to mean that casual ridership decreased by a significant amount, possibly due to the price increase. Limitations: This does not account for riders that may have instead converted to member riders, and it only includes data from one year. Recommendations: Analyze previous years' trends and compare casual and member ridership to 2025; consider running a special on casual ridership to see if a rebound occurs.
+
+
+```
+## Reflection and AI Disclosure
+```
+AI Disclosure: I used AI in part Q0d to explain the difference between attached and ships with. I used AI in part 2c to explain which term was the y-intercept. I used it in 3a for understanding how to include .fitted and .resid, which was just to include it with the rest of the selections. I used it in 4d to correct my code, because I did not use the correct syntax to filter out the intercept and I did not put xmin and xmax inside of aes() (I put them inside of geom_pointrange()). I used it in 6c to explain the difference between a naive and share model.
+```
