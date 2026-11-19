@@ -1,0 +1,327 @@
+---
+title: "board_report"
+author: "Riley Sapp (rsapp4)"
+date: "11/17/26"
+format:
+  html:
+    toc: true
+    code-fold: false
+execute:
+  warning: false
+  message: false
+  echo: false
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(readxl)
+library(broom)
+```
+
+```         
+R version 4.6.2 (2026-10-29 ucrt)
+
+Quarto version 1.11.9
+
+echo is set to false for readers who prefer plain language.
+```
+
+## Part A
+
+```{r}
+#| label: introduces-all-files-and-checks-them
+rides_2026 <- read_csv("rides_2026.csv")
+weather <- read_csv("weather_knoxville_daily.csv")
+stations <- read_excel("stations_2026.xlsx")
+nrow(rides_2026)
+nrow(weather)
+nrow(stations)
+length(unique(rides_2026$trip_id))
+print(unique(rides_2026$bike_type))
+sum(rides_2026$bike_type == "electric")
+sum(rides_2026$bike_type == "classic")
+sum(rides_2026$bike_type == "cargo")
+glimpse(rides_2026)
+glimpse(weather)
+```
+**There are `r nrow(rides_2026)` rows in rides_2026.csv, `r nrow(weather)` rows in weather_knoxville_daily.csv, and `r nrow(stations)` rows in stations_2026.xlsx.**
+**In this file, there are `r length(unique(rides_2026$trip_id))` distinct trip_ids. `r sum(rides_2026$bike_type == "electric")` trips are logged with electric bike types; `r sum(rides_2026$bike_type == "classic")` trips are logged with classic bike types; and `r sum(rides_2026$bike_type == "cargo")` are logged with cargo bike types.**
+
+```{r}
+#| label: finds-most-recent-trip
+max(rides_2026$end_time[!is.na(rides_2026$end_time)])
+```
+**The latest date in which a ride ended was `r as_date(max(rides_2026$end_time[!is.na(rides_2026$end_time)]))`; this date can be considered the cutoff of the data collected for October. Because of this, any total calculated from October as if it were a full month will be inaccurate, so monthly analyses should be avoided; however, analyses that look at each day or trip independently can utilize October dates.**
+
+```{r}
+#| label: filters-july-outage-trips-and-trips-with-no-start-time
+rides_2026 |>
+  filter(is.na(start_time)) |> head()
+rides_clean <- rides_2026 |>
+  filter(!is.na(start_time))
+```
+**The `r sum(is.na(rides_2026$start_time))` trips with no recorded start date are victims of the July 14 outage; to ensure that these impossible trips do not impact analyses surrounding trip duration, these trips will be dropped in further analysis.**
+
+```{r}
+#| label: filters-trips-with-no-station-id-and-trips-with-bad-lengths
+rides_clean <- rides_clean |>
+  distinct() |>
+  filter(
+    start_station_id != "S99",
+    is.na(end_station_id) | end_station_id != "S99",
+    as.Date(start_time) != as.Date("2026-10-13"))|>
+  mutate(
+    duration_min = as.numeric(difftime(end_time, start_time, units = "mins"))) |>
+  filter(duration_min >= 1, duration_min <= 1440)
+```
+**The original number of trips in the warehouse extract was `r nrow(rides_2026)`. This dataset included the records that had previously been flagged in the 2025 dataset (trips that were logged with a start or end at the test station "S99" and trips that were less than 1 minute long or more than 24 hours long); it also included trips that did not have a logged starting time due to the July 14 outage and trips that took place on the partial day of October 13. It is beneficial to also remove these trips from the dataset, as the trips with no starting date would make analysis of trip duration incomprehensive and including trips that took place on October 13 would make analysis of daily numbers of trips less than it is in actuality because not all trips were counted that day. When controlling for these factors, the number of trips for the 2026 dataset is `r nrow(rides_clean)`.**
+
+```{r}
+#| label: checks-vcds-data
+weather |> filter(precip_in == -99.9)
+weather |>
+  count(date) |>
+  filter(n > 1)
+```
+
+
+**The number of total rows of data that VCDS provided is `r nrow(weather)`, and the number of distinct dates that the dataset included was `r length(unique(weather$date))`, indicating that there are `r nrow(weather) - length(unique(weather$date))` rows that do not have one distinct date. There are `r sum(weather$precip_in == -99.9)` rows in which the precipitation has a missing value. The minimum temperature represented in the data is `r min(weather$tmin_f)` Fahrenheit, and the maximum temperature represented in the data is `r max(weather$tmax_f)` Fahrenheit. The number of duplicate days represented is `r nrow(weather |> count(date) |> filter(n>1))`. These days would need to be filtered out before joining the dataset to Ride Knox's data so that information is not overwritten.**
+
+```{r}
+#| label: deletes-duplicate-weather-and-adds-date-and-weather-to-clean-rides
+weather_clean <- weather |>
+  distinct()
+# weather_clean |> filter(precip_in == -99.9)
+  # These precipitation missing values are not part of the duplicate values
+rides_clean <- rides_clean |>
+  mutate(date = as_date(start_time))
+join_safety_proof <- rides_clean |>
+  left_join(weather_clean, by = "date")
+nrow(rides_clean)
+nrow(join_safety_proof)
+join_uncleaned <- rides_clean |>
+  left_join(weather, by = "date")
+nrow(join_uncleaned)
+```
+**Ride Knox's original data has `r nrow(rides_clean)` trips recorded, and when the merged dataset of the cleaned data is `r nrow(join_safety_proof)`. If the data was not cleaned before, merging the two datasets would result in `r nrow(join_uncleaned)` trips being recorded; these additional `r nrow(join_uncleaned) - nrow(rides_clean)` rows are identical rows, and they would have been missing all values from Ride Knox's data if the two datasets were merged before cleaning.**
+
+## Part B
+```{r}
+#| label: filters-rides-and-creates-pilot-extension
+rides_clean |>
+  filter(bike_type == "cargo") |>
+  select(start_station_name) |>
+  distinct()
+pilot_extension <- rides_clean |>
+  filter(
+    bike_type == "cargo",
+    start_station_name %in% c(
+      "Student Union - UT",
+      "The Hill - Ayres Hall",
+      "Hodges Library"
+    )
+  )
+print(as_date(min(pilot_extension$start_time)))
+```
+**The campus extension of the cargo pilot seems to have occurred, as there are `r nrow(rides_clean |> filter(bike_type == "cargo") |> select(start_station_name) |> distinct())` stations that there were departures from cargo bikes. The day that the campus extension was first launched was `r as_date(min(pilot_extension$start_time))`, and it was launched at `r unique(pilot_extension$start_station_name)`**
+
+**This analysis will measure the cargo pilot's success using number of trips as its units, as number of stations and days/weeks in which the program operates are determined by the operations team rather than by demand.**
+
+```{r}
+#| fig-cap: "Number of cargo trips over time"
+cargo_daily <- rides_clean |>
+  filter(bike_type == "cargo") |>
+  mutate(date = as.Date(start_time)) |>
+  group_by(date) |>
+  summarize(
+    cargo_trips = n(),
+    .groups = "drop"
+  )
+fit_naive <- lm(cargo_trips ~ date, data = cargo_daily)
+tidy(fit_naive, conf.int = TRUE)
+
+pilot_extension <- pilot_extension |>
+  mutate(date = as.Date(start_time)) |>
+  group_by(date) |>
+  summarize(cargo_trips = n(), .groups ="drop")
+
+ops_theme <- theme_minimal(base_size = 14) +   theme(
+  plot.title = element_text(face = "bold"),
+  panel.grid.minor = element_blank()
+)
+
+cargo_daily |>
+  ggplot(aes(x = date, y = cargo_trips)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = as.Date("2026-09-15"), linetype = "dashed", colour = "grey40") +
+  annotate("text", x = as.Date("2026-09-15"), y = 60, label = "Pilot extended to UT stations") +
+  labs(
+    title = "The number of cargo trips per day generally follows a positive trend as time goes on, with much greater spikes of activity after the launch of the UT extension",
+    x = "Date",
+    y = "Number of Cargo Trips"
+  ) +
+  ops_theme
+
+earliest_count <- cargo_daily |> filter(date == min(date)) |> summarize(earliest_count = sum(cargo_trips))
+
+cargo_daily_clean <- cargo_daily |>
+  filter(date != min(date))
+nrow(cargo_daily)
+nrow(cargo_daily_clean)
+  
+
+ext_fit_naive <- lm(cargo_trips ~ date, data = pilot_extension)
+tidy(ext_fit_naive, conf.int = TRUE)
+```
+**There are `r earliest_count` trips that were recorded on the first day that the pilot was operational, and the first few weeks of the pilot did not follow the typical cycle seen throughout the rest of the program. While the few weeks of atypical cycle can be interpreted as the program being new, the large number of recorded trips on the first day is not representative of the rest of the data: it creates a skew when controlling for cargo trips over time. Therefore, analyses of cargo trips over time will not utilize these `r sum(cargo_daily$cargo_trips) - sum(cargo_daily_clean$cargo_trips)` trips.**
+
+**The estimate for the naive trend of cargo volume over time is `r (coef(fit_naive)["date"])`, and its 95% confidence interval is between `r confint(fit_naive)["date", 1]` and `r confint(fit_naive)["date",2]`. The estimate for the naive trend of cargo volume over time, specifically for the stations that received the pilot as part of the extension (the UT stations) is `r (coef(ext_fit_naive)["date"])`, with a confidence interval between `r confint(ext_fit_naive)["date", 1]` and `r confint(ext_fit_naive)["date",2]`. This indicates that there the original pilot stations have seen a general correlation of `r round(coef(fit_naive)["date"], 3)` cargo trips per additional day, while the newly introduced pilot stations have seen a correlation of `r round(coef(ext_fit_naive)["date"], 3)` cargo trips per additional day. This can be taken to indicate that demand at existing stations is correlated with higher demand of cargo volume over time when compared to demand for more stations.**
+
+```{r}
+#| fig-cap: "Downtown residuals plotted over time before and after extension"
+downtown_before <- rides_clean |>
+  filter(
+    bike_type == "cargo",
+    as.Date(start_time) < as.Date("2026-09-15")
+  )
+downtown_after <- rides_clean |>
+  filter(
+    bike_type == "cargo",
+     !start_station_name %in% c(
+      "Student Union - UT",
+      "The Hill - Ayres Hall",
+      "Hodges Library"
+  ),
+    as.Date(start_time) > as.Date("2026-09-15")
+  )
+downtown_before_daily <- downtown_before |>
+  mutate(date = as.Date(start_time)) |>
+  group_by(date) |>
+  summarize(
+    cargo_trips = n(),
+    .groups = "drop"
+  )
+
+fit_downtown_before <- lm(
+  cargo_trips ~ date,
+  data = downtown_before_daily
+)
+downtown_after_daily <- downtown_after |>
+  mutate(date = as.Date(start_time)) |>
+  group_by(date) |>
+  summarize(
+    cargo_trips = n(),
+    .groups = "drop"
+  )
+
+fit_downtown_after <- lm(
+  cargo_trips ~ date,
+  data = downtown_after_daily
+)
+tidy(fit_downtown_before, conf.int = TRUE)
+tidy(fit_downtown_after, conf.int = TRUE)
+
+augment(fit_downtown_before, data = downtown_before_daily) |>
+  filter(date != min(date)) |>
+  ggplot(aes(x = date, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  geom_point(alpha = 0.4) +
+  labs(
+    title = "The residuals plotted over time for trips downtown before the UT extension show a clear wave",
+    x = "Date",
+    y = "Residuals"
+  ) +
+  ops_theme
+
+augment(fit_downtown_after, data = downtown_after_daily) |>
+  ggplot(aes(x = date, y = .resid)) +
+  geom_hline(yintercept = 0) +
+  geom_point(alpha = 0.4) +
+  labs(
+    title = "The residuals plotted over time for trips downtown after the UT extension are more varied and unpredictable",
+    x = "Date",
+    y = "Residuals"
+  ) +
+  ops_theme
+```
+**Before the introduction of the campus extension, the estimate for the naive trend of cargo volume per day in downtown stations is `r (coef(fit_downtown_before)["date"])`, and its 95% confidence interval is between `r confint(fit_downtown_before)["date", 1]` and `r confint(fit_downtown_before)["date",2]`. In contrast, after the introduction of the extension, the estimate for the naive trend of downtown's cargo volume is `r (coef(fit_downtown_after)["date"])`, with a confidence interval between `r confint(fit_downtown_after)["date", 1]` and `r confint(fit_downtown_after)["date",2]`. This indicates that the original pilot stations have seen around `r (round(coef(fit_downtown_after)["date"],3) - round(coef(fit_downtown_before)["date"],3))*-1` fewer cargo trips per additional day after the introduction of the pilot extension, indicating the the extension may be cannibalizing downtown's cargo volume.**
+
+## Part C
+```{r}
+possible_cargo_trips <- rides_clean |>
+  filter(
+    ( is.na(end_station_id) | end_station_id != "S99" |
+      start_station_name %in% c(
+        "Market Square",
+        "Old City - Jackson Ave",
+        "Krutch Park",
+        "World's Fair Park",
+        "Gay Street & Union Ave"
+      ) &
+      as.Date(start_time) >= min(cargo_daily_clean$date)) |
+    (start_station_name %in% c(
+        "Student Union - UT",
+        "The Hill - Ayres Hall",
+        "Hodges Library") &
+      as.Date(start_time) >= as.Date(min(pilot_extension$date)))
+  )  
+nrow(cargo_daily_clean)
+nrow(possible_cargo_trips)
+
+cargo_share_of_possible <- possible_cargo_trips |>
+  summarize(
+    total_trips = n(),
+    cargo_trips = sum(bike_type == "cargo"),
+    cargo_share = cargo_trips / total_trips
+  )
+```
+
+**A rider that departed from a station that was actively part of the pilot program can be assumed to have had the option of riding a cargo bike. Therefore, in order to determine what share of trips could have been cargo but were not, this report will take into account trips that departed from a station in Downtown starting on `r as_date(min(cargo_daily_clean$date))` or a station on campus starting on `r as_date(min(pilot_extension$date))`. The total number of trips to be analyzed is `r nrow(possible_cargo_trips)`, out of `r nrow(rides_clean)` total trips. The share of trips that were cargo that could have been is `r cargo_share_of_possible$cargo_share`.**
+
+```{r}
+weekend_cargo_share <- possible_cargo_trips |>
+  filter(is.na(start_station_id) | start_station_id != "S99") |>
+    mutate(
+      is_weekend = weekdays(as.Date(start_time)) %in% c("Saturday", "Sunday"), is_cargo = bike_type == "cargo")
+  
+fit_weekend_share <- glm(is_weekend ~ bike_type, data = weekend_cargo_share, family = binomial)  
+tidy(fit_weekend_share)
+
+  
+fit_cargo_share <- glm(is_cargo ~ is_weekend, data = weekend_cargo_share, family = binomial)  
+tidy(fit_cargo_share)
+
+examples <- tibble(
+  is_weekend = c(TRUE, FALSE, FALSE, FALSE)
+)
+
+augment(fit_cargo_share,newdata = examples, type.predict = "response")
+
+
+```
+**In the cleaned dataset, the odds that a trip on a weekend is taken by a classic bike rather than a cargo bike are `r coef(fit_weekend_share)["bike_typeclassic"]`, and the odds that a trip on a weekend is taken by an electric bike rather than a cargo bike are `r coef(fit_weekend_share)["bike_typeclassic"]`. The odds that a trip occurring on the weekend is by a cargo bike is `r coef(fit_weekend_share)["(Intercept)"]`. By these estimates, a cargo bike is much less likely to be taken on a weekend than a weekday. This is relevant, as weekends see `r round(mean(weekend_cargo_share$is_weekend) * 100, 1)`% of the total trips of the period, despite making up only two days of the week. The odds of a cargo trip taking place on a weekend are `r coef(fit_cargo_share)["is_weekendTRUE"]`.**
+
+## Part D
+--
+
+## Part E
+**Example of a sentence with source:**
+```
+Before the introduction of the campus extension, the estimate for the naive trend of cargo volume per day in downtown stations is r (coef(fit_downtown_before)["date"]), and its 95% confidence interval is between r confint(fit_downtown_before)["date", 1] and r confint(fit_downtown_before)["date",2].
+```
+
+## Part F
+**The introduction of a cargo pilot was successful in that riders used it, however an increased expansion would likely not overall improve ridership at Ride Knox, as data points to many riders being cannibalized from other groups.**
+
+**The original stations that were piloted for cargo bikes saw around `r (round(coef(fit_downtown_after)["date"],3) - round(coef(fit_downtown_before)["date"],3))*-1` fewer cargo trips per additional day after the introduction of the pilot extension.**
+
+**The data points to the idea indicating that the extension may be cannibalizing downtown's cargo volume; this could be interpreted that additional cargo expansion would not necessarily increase ridership.**
+
+**Limitations: This data is only pulled from `r as_date(min(cargo_daily_clean$date))` to `r as_date(max(rides_2026$end_time[!is.na(rides_2026$end_time)]))`. Additionally, it only looks at two stations; therefore, we cannot know if the cannibalization problem was caused by the closeness of the two stations and if it would have performed better at another station. Additionally, there is no precedent for the impact of a new bike type on ridership: the cannibalization rate cannot necessarily be ruled out as a failure of cargo. Additionally, because the pilot was only at two stations, we cannot know if these two stations would have a higher or lower demand for cargo bikes compared to other stations.**
+
+**Recommendation: Discontinue the cargo bike pilot, as the data insinuates that they are underutilized. The share of trips that were cargo that could have been is `r cargo_share_of_possible$cargo_share`, which indicates that riders do not take them as often as they should. Additionally, the data points to cannibalization.**
+
+## AI Disclosure
+**I used a generative AI tool to correct syntax when trying to utilize !is.na() when finding the max end_time of rides_2026 when determining the October cutoff. I used it to identify how to return an inline code version of the number of duplicate days represented in weather. I used it to mutate a date column for cargo_daily and group by date. I used it when putting the confidence interval into inline code in order to correctly display both estimates. I used it when trying to create downtown_after_daily to troubleshoot where to put the ! operator to correctly filter out campus stations. I also used it to mutate an is_weekend column, because I could not find the correct function in my notes. All code and final conclusions are my own.**
