@@ -69,7 +69,7 @@ rides_clean <- rides_clean |>
   distinct() |>
   filter(
     start_station_id != "S99",
-    is.na(end_station_id) | end_station_id != "S99",
+    !is.na(end_station_id) | end_station_id != "S99",
     as.Date(start_time) != as.Date("2026-10-13"))|>
   mutate(
     duration_min = as.numeric(difftime(end_time, start_time, units = "mins"))) |>
@@ -252,7 +252,7 @@ augment(fit_downtown_after, data = downtown_after_daily) |>
 ```{r}
 possible_cargo_trips <- rides_clean |>
   filter(
-    ( is.na(end_station_id) | end_station_id != "S99" |
+    ((!is.na(end_station_id) | end_station_id != "S99") &
       start_station_name %in% c(
         "Market Square",
         "Old City - Jackson Ave",
@@ -265,8 +265,7 @@ possible_cargo_trips <- rides_clean |>
         "Student Union - UT",
         "The Hill - Ayres Hall",
         "Hodges Library") &
-      as.Date(start_time) >= as.Date(min(pilot_extension$date)))
-  )  
+      as.Date(start_time) >= as.Date(min(pilot_extension$date))))  
 nrow(cargo_daily_clean)
 nrow(possible_cargo_trips)
 
@@ -282,29 +281,89 @@ cargo_share_of_possible <- possible_cargo_trips |>
 
 ```{r}
 weekend_cargo_share <- possible_cargo_trips |>
-  filter(is.na(start_station_id) | start_station_id != "S99") |>
+  filter(!is.na(start_station_id) | start_station_id != "S99") |>
     mutate(
       is_weekend = weekdays(as.Date(start_time)) %in% c("Saturday", "Sunday"), is_cargo = bike_type == "cargo")
   
+#| fig-cap: "Odds that a ride falls on a weekend depending on its bike type"
 fit_weekend_share <- glm(is_weekend ~ bike_type, data = weekend_cargo_share, family = binomial)  
 tidy(fit_weekend_share)
 
-  
+#| fig-cap: "Odds that a cargo bike ride falls on a weekend"  
 fit_cargo_share <- glm(is_cargo ~ is_weekend, data = weekend_cargo_share, family = binomial)  
 tidy(fit_cargo_share)
 
-examples <- tibble(
+with_error <- rides_clean |>
+  filter((
+      start_station_name %in% c(
+        "Market Square",
+        "Old City - Jackson Ave",
+        "Krutch Park",
+        "World's Fair Park",
+        "Gay Street & Union Ave"
+      ) &
+      as.Date(start_time) >= min(cargo_daily_clean$date)) |
+    (start_station_name %in% c(
+        "Student Union - UT",
+        "The Hill - Ayres Hall",
+        "Hodges Library") &
+      as.Date(start_time) >= as.Date(min(pilot_extension$date)))) |>
+  mutate(no_start_station = is.na(start_station_id), is_cargo = bike_type == "cargo")
+
+#| fig-cap: "Odds that a cargo ride falls has no start station ID record"
+fit_cargo_error <- glm(no_start_station ~ is_cargo, data = with_error, family = binomial)  
+tidy(fit_cargo_error)
+
+newdata <- tibble(
   is_weekend = c(TRUE, FALSE, FALSE, FALSE)
 )
 
-augment(fit_cargo_share,newdata = examples, type.predict = "response")
+augment(fit_cargo_share,date = newdata, type.predict = "response")
 
-
+augment(fit_cargo_error, date = no_start_station) |> select(no_start_station, .fitted, .resid) |> arrange(desc(.resid))
 ```
-**In the cleaned dataset, the odds that a trip on a weekend is taken by a classic bike rather than a cargo bike are `r coef(fit_weekend_share)["bike_typeclassic"]`, and the odds that a trip on a weekend is taken by an electric bike rather than a cargo bike are `r coef(fit_weekend_share)["bike_typeclassic"]`. The odds that a trip occurring on the weekend is by a cargo bike is `r coef(fit_weekend_share)["(Intercept)"]`. By these estimates, a cargo bike is much less likely to be taken on a weekend than a weekday. This is relevant, as weekends see `r round(mean(weekend_cargo_share$is_weekend) * 100, 1)`% of the total trips of the period, despite making up only two days of the week. The odds of a cargo trip taking place on a weekend are `r coef(fit_cargo_share)["is_weekendTRUE"]`.**
+**In the cleaned dataset, the odds that a trip on a weekend is taken by a classic bike rather than a cargo bike are `r coef(fit_weekend_share)["bike_typeclassic"]`, and the odds that a trip on a weekend is taken by an electric bike rather than a cargo bike are `r coef(fit_weekend_share)["bike_typeclassic"]`. The odds that a trip occurring on the weekend is by a cargo bike is `r coef(fit_weekend_share)["(Intercept)"]`. By these estimates, a cargo bike is much less likely to be taken on a weekend than a weekday. This is relevant, as weekends see `r round(mean(weekend_cargo_share$is_weekend) * 100, 1)`% of the total trips of the period, despite making up only two days of the week. The odds of a cargo trip taking place on a weekend are `r coef(fit_cargo_share)["is_weekendTRUE"]`. Additionally, the odds that a cargo trip has no start station recorded is `r coef(fit_cargo_error)["is_cargoTRUE"]` This model can provide an understanding of historical data, but it cannot reliably predict future trips.**
 
 ## Part D
---
+```{r}
+daily_weather <- rides_clean |>
+count(date = as_date(start_time), rider_type) |>
+pivot_wider(names_from = rider_type, values_from = n) |>  
+  mutate(total_trips = casual + member + !is.na(day_pass)) |> left_join(weather, by = "date") |> mutate(average_temp = (tmax_f + tmin_f)/2)
+nrow(daily_weather)
+glimpse(daily_weather)
+glimpse(rides_clean)
+
+fit_temp <- lm(total_trips ~ average_temp, data = daily_weather)
+
+#| fig-cap: "Number of rides fitted against average temperature"
+augment(fit_temp, data = daily_weather) |>
+ggplot(aes(x = average_temp, y = .fitted)) +
+geom_point(alpha = 0.4) +
+  labs(
+    title = "There is a correlation between warm weather and predicted number of rides",
+    x = "Average Temperature",
+    y = "Predicted number of rides"
+  )
+
+daily_weather_rain_clean <- daily_weather |> filter(precip_in != -99.9)
+fit_rain <- lm(total_trips ~ precip_in, data = daily_weather_rain_clean)
+
+#| fig-cap: "Number of rides fitted against rainfall in inches"
+augment(fit_rain, data = daily_weather_rain_clean) |>
+ggplot(aes(x = precip_in, y = .fitted)) +
+geom_point(alpha = 0.4) +
+  labs(
+    title = "There is a correlation between less precipitation and predicted number of rides",
+    x = "Daily Precipitation (in)",
+    y = "Predicted number of rides"
+  )
+
+daily_weather_rain_boolean <- daily_weather_rain_clean |> filter(precip_in != -99.9) |> mutate(has_rain = precip_in != 0)
+fit_has_rain <- glm(has_rain ~ total_trips, data = daily_weather_rain_boolean, family = binomial)  
+tidy(fit_has_rain)
+```
+**The combined weather and rides dataset returns the `r nrow(daily_weather)` days that are recorded, which is the data up until the `r as_date(max(rides_2026$end_time[!is.na(rides_2026$end_time)]))` cutoff without the July 14 outage. For every one degree Fahrenheit increase in temperature that a day experiences, the model predicts `r coef(fit_temp)["average_temp"]` more trips. Additionally, for every inch of rain that a day experiences, the model predicts `r -coef(fit_rain)["precip_in"]` fewer trips. Days in which it rains are associated with `r -coef(fit_has_rain)["total_trips"]` fewer trips.**
 
 ## Part E
 **Example of a sentence with source:**
@@ -324,4 +383,4 @@ Before the introduction of the campus extension, the estimate for the naive tren
 **Recommendation: Discontinue the cargo bike pilot, as the data insinuates that they are underutilized. The share of trips that were cargo that could have been is `r cargo_share_of_possible$cargo_share`, which indicates that riders do not take them as often as they should. Additionally, the data points to cannibalization.**
 
 ## AI Disclosure
-**I used a generative AI tool to correct syntax when trying to utilize !is.na() when finding the max end_time of rides_2026 when determining the October cutoff. I used it to identify how to return an inline code version of the number of duplicate days represented in weather. I used it to mutate a date column for cargo_daily and group by date. I used it when putting the confidence interval into inline code in order to correctly display both estimates. I used it when trying to create downtown_after_daily to troubleshoot where to put the ! operator to correctly filter out campus stations. I also used it to mutate an is_weekend column, because I could not find the correct function in my notes. All code and final conclusions are my own.**
+**I used a generative AI tool to correct syntax when trying to utilize !is.na() when finding the max end_time of rides_2026 when determining the October cutoff. I used it to identify how to return an inline code version of the number of duplicate days represented in weather. I used it to mutate a date column for cargo_daily and group by date. I used it when putting the confidence interval into inline code in order to correctly display both estimates. I used it when trying to create downtown_after_daily to troubleshoot where to put the ! operator to correctly filter out campus stations. I also used it to mutate an is_weekend column, because I could not find the correct function in my notes. I also used it in part D to determine how to build a total_trips column that summed each row, because I did not know how to correct my syntax when I tried sum(rider_type). All code and final conclusions are my own.**
